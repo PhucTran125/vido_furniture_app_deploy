@@ -1,0 +1,280 @@
+export const translations = {
+  en: {
+    nav: {
+      home: 'Home',
+      about: 'About',
+      products: 'Products',
+      blog: 'Blog',
+      contact: 'Contact',
+    },
+    hero: {
+      badge: 'Export Quality since 2010',
+      titleStart: 'Craftsmanship &',
+      titleEnd: 'Comfort',
+      description: "Vietnam's Premier Furniture Manufacturer. Blending industrial precision with artisanal detail.",
+      explore: 'Explore Collection',
+      contact: 'Contact Us',
+    },
+    about: {
+      badge: 'Our Story',
+      title: 'About VIDO Furniture',
+      p1: 'VIDO Vietnam Furniture Joint Stock Company is an export-oriented manufacturing enterprise specializing in the research, design, production, and trading of compact and sophisticated furniture products such as folding chairs, creative seating, storage benches, and other home decor items.',
+      p2: 'Although recently established, VIDO Vietnam is built on a foundation of experienced personnel in the furniture production and export industry. The company possesses a well-established quality management system along with a youthful, dynamic, and innovative team that pays close attention to every detail in design and production.',
+      p3: 'Since its early stages, VIDO Vietnam has gradually approached the international market, focusing on regions with high quality requirements and product standards such as Europe, the United States, and Japan. We are oriented toward sustainable development, taking prestige, product quality, and customer satisfaction as the foundation for long-term growth.',
+      p4: 'VIDO Vietnam is committed to delivering products with aesthetic designs, stable quality, and professional cooperative services, aiming to become a trusted partner for both domestic and international customers.',
+      visionTitle: 'Vision',
+      visionDesc: 'To be the most trusted global partner in compact furniture innovation.',
+      missionTitle: 'Mission',
+      missionDesc: 'Delivering sustainable, aesthetic, and high-quality solutions for modern living spaces.',
+      valuesTitle: 'Values',
+      valuesDesc: 'Integrity, continuous innovation, and unwavering commitment to customer satisfaction.'
+    },
+    highlights: {
+      quality: 'Export Quality',
+      qualityDesc: 'Meeting international standards for durability and finish.',
+      service: 'Customer Service',
+      serviceDesc: 'Dedicated support team ensuring smooth communication and delivery.',
+      factory: 'Factory',
+      factoryDesc: 'Large-scale manufacturing capabilities with strict quality control.',
+      back: 'Back to Overview',
+      badgeQuality: 'Global Standards',
+      badgeService: '24/7 Support',
+      badgeFactory: 'Large Scale',
+      detailHeader: 'Commitment to Excellence',
+      detailP1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      subHeader1: 'Our Standards',
+      subP1: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      subHeader2: 'Continuous Improvement',
+      subP2: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
+      quote: 'We believe that every detail matters, from the initial sketch to the final shipment container.',
+      
+      // Customer Service Section
+      serviceIntroTitle: 'Our Custom Service Process',
+      serviceIntroDesc: 'We are a leading furniture manufacturer based in Vietnam, dedicated to providing high-quality custom furniture solutions to importers, wholesalers, and distributors globally. Our procurement process is designed to be seamless, ensuring that you receive the products you need efficiently and on time.',
+      serviceSteps: [
+        { title: "Digital Product Catalog", desc: "We start by sending you a detailed digital product catalog, showcasing our extensive range of furniture designs and styles." },
+        { title: "Product Selection", desc: "You review the catalog, selecting desired products and specifying quantities based on your requirements." },
+        { title: "Quotation & Proforma Invoice", desc: "After receiving your selections, we issue a quotation along with a proforma invoice (PI) outlining the costs involved." },
+        { title: "30% Deposit Payment", desc: "A 30% deposit is required based on the PI to initiate the procurement process." },
+        { title: "Sourcing and Production", desc: "Upon receipt of the deposit, we commence sourcing and production, applying for container booking approximately one month before the estimated time of departure (ETD)." },
+        { title: "Inspection and Testing", desc: "One week before delivery, we conduct thorough product inspection and testing. Only after passing these tests do we arrange for container loading." },
+        { title: "Balance Payment & Export Docs", desc: "After loading, we request the remaining balance payment. Upon receipt, we release all necessary export documents including the PI, commercial invoice (CI), bill of lading (BL), and certificate of origin (CO)." }
+      ],
+      serviceCTA: 'Get Started Today!',
+      serviceCTADesc: 'We take pride in our reliable service and commitment to quality. If you’re ready to begin your procurement journey with us, please reach out to our team for personalized assistance.',
+      serviceBtn: 'Contact Us Now',
+
+      // Factory Section
+      factoryIntroTitle: 'Manufacturing Excellence & Capability',
+      factoryIntroDesc: 'The manufacturing capability of Vido Furniture Co., Ltd. is meticulously structured to ensure efficiency and precision at every stage of production.',
+      manufacturingPoints: [
+        { title: "Precision Cutting", desc: "The process begins with selecting high-quality materials, precisely cut using advanced machinery to reduce waste and enhance accuracy." },
+        { title: "Exquisite Sewing", desc: "Skilled artisans employ refined craftsmanship techniques to stitch components, ensuring both structural integrity and premium aesthetic quality." },
+        { title: "Professional Assembly", desc: "Each piece is carefully put together under stringent quality assurance protocols to ensure all components align perfectly and meet international standards." },
+        { title: "Rigorous Quality Control", desc: "Every product undergoes rigorous inspection after assembly to verify conformity to quality benchmarks before reaching the customer." },
+        { title: "Advanced Integration", desc: "By integrating state-of-the-art technology with traditional craftsmanship, Vido Furniture demonstrates its capability to meet diverse market demands." }
+      ],
+      gallerySub: 'Inside VIDO',
+      galleryTitle: 'Our Workplace & Workforce',
+      galleryDesc: 'A glimpse into the environment where skilled artisans and modern technology come together.',
+
+      // Sustainability Section
+      susValues: 'Our Values',
+      susTitle: 'Commitment to Quality and Sustainability',
+      susIntro: 'Vido Furniture Co., Ltd. is established with a strong commitment to quality and sustainability guiding all operations.',
+      susP1Title: 'Responsible Sourcing',
+      susP1Desc: 'We prioritize the procurement of environmentally friendly materials from sustainably managed forests to minimize environmental impact.',
+      susP2Title: 'Energy-Efficient Production',
+      susP2Desc: 'By investing in modern machinery, we optimize production lines to enhance productivity while reducing energy consumption.',
+      susP3Title: 'Waste Reduction',
+      susP3Desc: 'We actively recycle scraps and non-usable materials, seeking innovative ways to repurpose products and reduce our ecological footprint.',
+      susP4Title: 'Customer-Driven Improvement',
+      susP4Desc: 'We value consumer insights to refine our product offerings and enhance service quality, meeting evolving market demands with eco-friendly practices.',
+      
+      // Gallery
+      imageLabel: 'Image'
+    },
+    blog: {
+      badge: 'Latest News',
+      title: 'Our Blog',
+      readMore: 'Read More',
+    },
+    featured: {
+      badge: 'Our Best Sellers',
+      title: 'Featured Collection',
+      description: 'Discover our signature pieces. From luxury velvet accents to functional storage solutions, each piece represents the pinnacle of VIDO craftsmanship and design excellence.',
+      viewAll: 'View Full Catalog',
+      quickView: 'Quick View',
+    },
+    products: {
+      badge: 'The Complete Collection',
+      title: 'Full Catalog',
+      description: 'Browse our extensive range of export-ready furniture. Designed for modern living spaces and built to rigorous international standards.',
+      searchPlaceholder: 'Search by name or item code...',
+      filterAll: 'All',
+      noResults: 'No products found matching your criteria.',
+      showing: 'Showing',
+      results: 'results',
+    },
+    card: {
+      material: 'Material',
+      size: 'Size',
+      inquire: 'Inquire Now',
+    },
+    contact: {
+      title: 'Contact Us',
+      description: 'Ready to order or have questions? Get in touch with our sales team directly.',
+      address: 'Company Address',
+      fullAddress: 'Phuong La Village, Thai Phuong Commune, Hung Ha District, Thai Binh Province, Vietnam',
+      companyName: 'VIDO VIET NAM FURNITURE JOINT STOCK COMPANY (VIDO FURNITURE JSC)',
+      hotline: 'Hotlines',
+      taxCode: 'Tax Code',
+      email: 'Email',
+    },
+    footer: {
+      description: 'Leading the way in furniture manufacturing with a commitment to quality, innovation, and reliability.',
+      contactHeader: 'Contact',
+      rights: 'All rights reserved.',
+      designed: 'Designed for Excellence.',
+    }
+  },
+  vi: {
+    nav: {
+      home: 'Trang Chủ',
+      about: 'Giới Thiệu',
+      products: 'Sản Phẩm',
+      blog: 'Tin Tức',
+      contact: 'Liên Hệ',
+    },
+    hero: {
+      badge: 'Chất Lượng Xuất Khẩu Từ 2010',
+      titleStart: 'Tinh Hoa &',
+      titleEnd: 'Tiện Nghi',
+      description: "Nhà sản xuất nội thất hàng đầu Việt Nam. Kết hợp dây chuyền công nghiệp chính xác với sự tỉ mỉ của nghệ nhân.",
+      explore: 'Xem Bộ Sưu Tập',
+      contact: 'Liên Hệ Ngay',
+    },
+    about: {
+      badge: 'Câu chuyện của chúng tôi',
+      title: 'Về Nội Thất VIDO',
+      p1: 'Công ty Cổ phần Nội thất VIDO Việt Nam là doanh nghiệp sản xuất định hướng xuất khẩu, chuyên nghiên cứu, thiết kế, sản xuất và kinh doanh các dòng sản phẩm nội thất nhỏ gọn và tinh tế như ghế gấp, ghế sáng tạo, ghế lưu trữ và các sản phẩm trang trí gia đình khác.',
+      p2: 'Dù mới được thành lập, VIDO Việt Nam được xây dựng trên nền tảng đội ngũ nhân sự có kinh nghiệm trong lĩnh vực sản xuất và xuất khẩu nội thất. Công ty sở hữu hệ thống quản lý chất lượng được thiết lập bài bản, cùng đội ngũ trẻ trung, năng động và giàu tinh thần đổi mới, luôn chú trọng đến từng chi tiết trong thiết kế và sản xuất.',
+      p3: 'Ngay từ giai đoạn đầu hoạt động, VIDO Việt Nam đã từng bước tiếp cận thị trường quốc tế, tập trung vào các thị trường có yêu cầu cao về chất lượng và tiêu chuẩn sản phẩm như châu Âu, Hoa Kỳ và Nhật Bản. Chúng tôi định hướng phát triển bền vững, lấy uy tín, chất lượng sản phẩm và sự hài lòng của khách hàng làm nền tảng cho sự phát triển lâu dài.',
+      p4: 'VIDO Việt Nam cam kết mang đến các sản phẩm có thiết kế thẩm mỹ, chất lượng ổn định và dịch vụ hợp tác chuyên nghiệp, hướng tới trở thành đối tác tin cậy của khách hàng trong và ngoài nước.',
+      visionTitle: 'Tầm Nhìn',
+      visionDesc: 'Trở thành đối tác toàn cầu đáng tin cậy nhất trong lĩnh vực đổi mới nội thất nhỏ gọn.',
+      missionTitle: 'Sứ Mệnh',
+      missionDesc: 'Cung cấp các giải pháp bền vững, thẩm mỹ và chất lượng cao cho không gian sống hiện đại.',
+      valuesTitle: 'Giá Trị',
+      valuesDesc: 'Chính trực, đổi mới không ngừng và cam kết kiên định với sự hài lòng của khách hàng.'
+    },
+    highlights: {
+      quality: 'Chất Lượng Xuất Khẩu',
+      qualityDesc: 'Đạt tiêu chuẩn quốc tế về độ bền và độ hoàn thiện.',
+      service: 'Dịch Vụ Khách Hàng',
+      serviceDesc: 'Đội ngũ hỗ trợ tận tâm đảm bảo giao tiếp và vận chuyển thông suốt.',
+      factory: 'Nhà Máy Sản Xuất',
+      factoryDesc: 'Năng lực sản xuất quy mô lớn với quy trình kiểm soát chất lượng nghiêm ngặt.',
+      back: 'Quay lại Trang chủ',
+      badgeQuality: 'Tiêu chuẩn Quốc tế',
+      badgeService: 'Hỗ trợ 24/7',
+      badgeFactory: 'Quy Mô Lớn',
+      detailHeader: 'Cam kết cho sự Hoàn hảo',
+      detailP1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      subHeader1: 'Tiêu chuẩn của chúng tôi',
+      subP1: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      subHeader2: 'Cải tiến Liên tục',
+      subP2: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
+      quote: 'Chúng tôi tin rằng mọi chi tiết đều quan trọng, từ bản phác thảo đầu tiên đến thùng hàng xuất xưởng cuối cùng.',
+      
+      // Customer Service Section
+      serviceIntroTitle: 'Quy Trình Dịch Vụ Của Chúng Tôi',
+      serviceIntroDesc: 'Chúng tôi là nhà sản xuất nội thất hàng đầu tại Việt Nam, chuyên cung cấp các giải pháp nội thất tùy chỉnh chất lượng cao cho các nhà nhập khẩu, bán buôn và phân phối trên toàn cầu. Quy trình thu mua của chúng tôi được thiết kế liền mạch, đảm bảo bạn nhận được sản phẩm cần thiết một cách hiệu quả và đúng hạn.',
+      serviceSteps: [
+        { title: "Danh Mục Sản Phẩm Số", desc: "Chúng tôi bắt đầu bằng việc gửi cho bạn danh mục sản phẩm số chi tiết, giới thiệu các thiết kế và phong cách nội thất đa dạng." },
+        { title: "Lựa Chọn Sản Phẩm", desc: "Bạn xem xét danh mục, chọn sản phẩm mong muốn và chỉ định số lượng dựa trên yêu cầu của mình." },
+        { title: "Báo Giá & Hóa Đơn Proforma", desc: "Sau khi nhận được lựa chọn của bạn, chúng tôi sẽ gửi báo giá cùng với hóa đơn chiếu lệ (PI) phác thảo các chi phí liên quan." },
+        { title: "Thanh Toán Đặt Cọc 30%", desc: "Cần đặt cọc 30% dựa trên PI để bắt đầu quy trình thu mua." },
+        { title: "Thu Mua & Sản Xuất", desc: "Sau khi nhận tiền đặt cọc, chúng tôi bắt đầu thu mua và sản xuất, đăng ký đặt container khoảng một tháng trước thời gian khởi hành dự kiến (ETD)." },
+        { title: "Kiểm Tra & Thử Nghiệm", desc: "Một tuần trước khi giao hàng, chúng tôi tiến hành kiểm tra và thử nghiệm sản phẩm kỹ lưỡng. Chỉ sau khi vượt qua các bài kiểm tra này, chúng tôi mới sắp xếp đóng container." },
+        { title: "Thanh Toán Số Dư & Chứng Từ", desc: "Sau khi đóng hàng, chúng tôi yêu cầu thanh toán số dư còn lại. Khi nhận được, chúng tôi phát hành tất cả các chứng từ xuất khẩu cần thiết bao gồm PI, hóa đơn thương mại (CI), vận đơn (BL) và chứng nhận xuất xứ (CO)." }
+      ],
+      serviceCTA: 'Bắt Đầu Ngay Hôm Nay!',
+      serviceCTADesc: 'Chúng tôi tự hào về dịch vụ đáng tin cậy và cam kết chất lượng. Nếu bạn đã sẵn sàng bắt đầu hành trình thu mua cùng chúng tôi, hãy liên hệ với đội ngũ của chúng tôi để được hỗ trợ cá nhân hóa.',
+      serviceBtn: 'Liên Hệ Ngay',
+
+      // Factory Section
+      factoryIntroTitle: 'Năng Lực & Sự Xuất Sắc Trong Sản Xuất',
+      factoryIntroDesc: 'Năng lực sản xuất của Công ty TNHH Nội thất Vido được cấu trúc tỉ mỉ để đảm bảo hiệu quả và độ chính xác ở mọi giai đoạn sản xuất.',
+      manufacturingPoints: [
+        { title: "Cắt Chính Xác", desc: "Quy trình bắt đầu bằng việc lựa chọn vật liệu chất lượng cao, được cắt chính xác bằng máy móc tiên tiến để giảm lãng phí và tăng độ chính xác." },
+        { title: "May Tinh Tế", desc: "Các nghệ nhân lành nghề sử dụng kỹ thuật thủ công tinh xảo để may các bộ phận, đảm bảo cả độ bền kết cấu và thẩm mỹ cao cấp." },
+        { title: "Lắp Ráp Chuyên Nghiệp", desc: "Mỗi sản phẩm được lắp ráp cẩn thận theo quy trình đảm bảo chất lượng nghiêm ngặt để đảm bảo tất cả các bộ phận khớp hoàn hảo và đáp ứng tiêu chuẩn quốc tế." },
+        { title: "Kiểm Soát Chất Lượng Nghiêm Ngặt", desc: "Mỗi sản phẩm đều trải qua kiểm tra nghiêm ngặt sau khi lắp ráp để xác minh sự phù hợp với các tiêu chuẩn chất lượng trước khi đến tay khách hàng." },
+        { title: "Tích Hợp Tiên Tiến", desc: "Bằng cách tích hợp công nghệ hiện đại với nghề thủ công truyền thống, Nội thất Vido chứng minh khả năng đáp ứng nhu cầu thị trường đa dạng." }
+      ],
+      gallerySub: 'Bên Trong VIDO',
+      galleryTitle: 'Nơi Làm Việc & Đội Ngũ',
+      galleryDesc: 'Cái nhìn thoáng qua về môi trường nơi các nghệ nhân lành nghề và công nghệ hiện đại kết hợp với nhau.',
+
+      // Sustainability Section
+      susValues: 'Giá Trị Cốt Lõi',
+      susTitle: 'Cam Kết Về Chất Lượng Và Bền Vững',
+      susIntro: 'VIDO Furniture Co., Ltd. được thành lập với cam kết mạnh mẽ về chất lượng và tính bền vững, kim chỉ nam cho mọi hoạt động.',
+      susP1Title: 'Nguồn Cung Ứng Trách Nhiệm',
+      susP1Desc: 'Chúng tôi ưu tiên thu mua nguyên liệu thân thiện với môi trường từ các khu rừng được quản lý bền vững để giảm thiểu tác động đến môi trường.',
+      susP2Title: 'Sản Xuất Tiết Kiệm Năng Lượng',
+      susP2Desc: 'Bằng cách đầu tư vào máy móc hiện đại, chúng tôi tối ưu hóa dây chuyền sản xuất để nâng cao năng suất đồng thời giảm tiêu thụ năng lượng.',
+      susP3Title: 'Giảm Thiểu Chất Thải',
+      susP3Desc: 'Chúng tôi tích cực tái chế phế liệu và vật liệu không sử dụng được, tìm kiếm các giải pháp sáng tạo để tái sử dụng sản phẩm và giảm dấu chân sinh thái.',
+      susP4Title: 'Cải Tiến Hướng Đến Khách Hàng',
+      susP4Desc: 'Chúng tôi trân trọng ý kiến của người tiêu dùng để hoàn thiện sản phẩm và nâng cao chất lượng dịch vụ, đáp ứng nhu cầu thị trường ngày càng cao bằng các thực hành thân thiện với môi trường.',
+      
+      // Gallery
+      imageLabel: 'Hình ảnh'
+    },
+    blog: {
+      badge: 'Tin Tức Mới Nhất',
+      title: 'Blog',
+      readMore: 'Xem Thêm',
+    },
+    featured: {
+      badge: 'Sản Phẩm Bán Chạy',
+      title: 'Bộ Sưu Tập Nổi Bật',
+      description: 'Khám phá những thiết kế đặc trưng của chúng tôi. Từ điểm nhấn nhung sang trọng đến giải pháp lưu trữ tiện dụng, mỗi sản phẩm đại diện cho đỉnh cao tay nghề VIDO.',
+      viewAll: 'Xem Toàn Bộ Catalog',
+      quickView: 'Xem Nhanh',
+    },
+    products: {
+      badge: 'Bộ Sưu Tập Hoàn Chỉnh',
+      title: 'Danh Mục Sản Phẩm',
+      description: 'Duyệt qua danh mục nội thất xuất khẩu đa dạng. Được thiết kế cho không gian sống hiện đại và xây dựng theo tiêu chuẩn quốc tế nghiêm ngặt.',
+      searchPlaceholder: 'Tìm kiếm theo tên hoặc mã sản phẩm...',
+      filterAll: 'Tất cả',
+      noResults: 'Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.',
+      showing: 'Hiển thị',
+      results: 'kết quả',
+    },
+    card: {
+      material: 'Chất liệu',
+      size: 'Kích thước',
+      inquire: 'Hỏi Hàng Ngay',
+    },
+    contact: {
+      title: 'Liên Hệ Với Chúng Tôi',
+      description: 'Bạn muốn đặt hàng hoặc có câu hỏi? Hãy liên hệ trực tiếp với đội ngũ kinh doanh của chúng tôi.',
+      address: 'Địa Chỉ Công Ty',
+      fullAddress: 'Thôn Phương La, Xã Thái Phương, Huyện Hưng Hà, Tỉnh Thái Bình, Việt Nam',
+      companyName: 'CÔNG TY CỔ PHẦN NỘI THẤT VIDO VIỆT NAM (VIDO FURNITURE JSC)',
+      hotline: 'Số Điện Thoại Liên Hệ',
+      taxCode: 'Mã Số Thuế',
+      email: 'Email',
+    },
+    footer: {
+      description: 'Tiên phong trong sản xuất nội thất với cam kết về chất lượng, đổi mới và độ tin cậy.',
+      contactHeader: 'Liên Hệ',
+      rights: 'Bảo lưu mọi quyền.',
+      designed: 'Thiết kế hướng tới sự xuất sắc.',
+    }
+  }
+};
