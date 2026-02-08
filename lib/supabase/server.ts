@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 // Use this ONLY in server components, API routes, and server actions
 // DO NOT use in client components - it has elevated privileges
 export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
   {
     auth: {
