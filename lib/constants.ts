@@ -15,41 +15,42 @@ export const COMPANY_INFO = {
 export const PRODUCTS: Product[] = [
   {
     id: '1',
+    itemNo: "VWF22A1091LX-9C",
+    category: "Bench",
     name: {
       en: "Minimalist Gold-Leg Bench",
       vi: "Băng Ghế Minimalist Gold-Leg"
     },
-    itemNo: "VWF22A1091LX-9C",
-    image: 'Picture/1.jpg',
-    category: "Bench",
+    images: [
+      { url: 'Picture/1.jpg', isMain: true, displayOrder: 1 }
+    ],
     dimensions: {
-      dai: 144,
-      rong: 49,
-      cao: 47
+      en: ["L144 x W49 x H47 cm"],
+      vi: ["L144 x W49 x H47 cm"]
     },
-    material: [
-      { en: "Velvet Fabric (Standard)", vi: "Vải nhung (Như cũ)" },
-      { en: "Metal Legs", vi: "Chân kim loại" }
-    ]
+    material: {
+      en: ["Velvet Fabric (Standard)", "Metal Legs"],
+      vi: ["Vải nhung (Như cũ)", "Chân kim loại"]
+    }
   },
   {
     id: '2',
-    name: {
-      en: "Macaron Multi-purpose Ottoman – Flip Top Version",
-      vi: "Ghế Đôn Macaron Đa Năng – Phiên Bản Lật Nắp"
-    },
     itemNo: "VWF24A1317 (5)",
-    image: 'Picture/5.jpg',
     category: "Ottoman",
+    name: {
+      en: "Macaron Multi-purpose Ottoman - Flip Top Version",
+      vi: "Ghế Đôn Macaron Đa Năng - Phiên Bản Lật Nắp"
+    },
+    images: [
+      { url: 'Picture/5.jpg', isMain: true, displayOrder: 1 }
+    ],
     dimensions: {
-      duong_kinh_mat_ghe: 30,
-      chieu_cao_tong_the: 45,
-      do_sau_long_ghe: 15
+      en: ["Ø30 x H45 cm", "Seat depth: 15cm"],
+      vi: ["Ø30 x H45 cm", "Độ sâu ghế: 15cm"]
     },
     material: {
-      vai: { en: "Malaysian Felt", vi: "Vải nỉ Malaysia" },
-      go: { en: "Industrial Wood Core", vi: "Gỗ công nghiệp lõi" },
-      chan_ghe: { en: "Eucalyptus Wood", vi: "Gỗ Tần Bạch đàn" }
+      en: ["Malaysian Felt fabric", "Industrial Wood Core", "Eucalyptus Wood legs"],
+      vi: ["Vải nỉ Malaysia", "Gỗ công nghiệp lõi", "Chân gỗ Tần Bạch đàn"]
     },
     description: {
       en: [
@@ -66,22 +67,22 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '3',
+    itemNo: "VWF23A1691YR-1A (5)",
+    category: "Stool",
     name: {
       en: "Scandinavian Decor Wooden Leg Stool",
       vi: "Ghế Đôn Decor Scandinavian Chân Gỗ"
     },
-    itemNo: "VWF23A1691YR-1A (5)",
-    image: 'Picture/9.jpg',
-    category: "Stool",
+    images: [
+      { url: 'Picture/9.jpg', isMain: true, displayOrder: 1 }
+    ],
     dimensions: {
-      mat_ghe: "38x38",
-      chieu_cao: 38,
-      do_sau_long_ghe: 20
+      en: ["38x38cm", "H38cm", "Seat depth: 20cm"],
+      vi: ["38x38cm", "H38cm", "Độ sâu ghế: 20cm"]
     },
     material: {
-      vai: { en: "Bouclé Fabric (Faux Lambswool)", vi: "Vải Bouclé (lông cừu giả)" },
-      khung: { en: "Plywood or Reinforced Plastic", vi: "Gỗ ván ép (Plywood) hoặc nhựa chịu lực" },
-      chan_ghe: { en: "Natural Pine Wood", vi: "Gỗ Thông tự nhiên" }
+      en: ["Bouclé Fabric (Faux Lambswool)", "Plywood or Reinforced Plastic frame", "Natural Pine Wood legs"],
+      vi: ["Vải Bouclé (lông cừu giả)", "Khung gỗ ván ép hoặc nhựa chịu lực", "Chân gỗ Thông tự nhiên"]
     },
     description: {
       en: [
@@ -98,30 +99,30 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '4',
+    itemNo: "VWF22A1317CG-2A",
+    category: "Collection",
     name: {
       en: "Bubble Storage Furniture Collection",
       vi: "Bộ Sưu Tập Nội Thất Bubble Storage"
     },
-    itemNo: "VWF22A1317CG-2A",
-    image: 'Picture/13.jpg',
-    category: "Collection",
-    setComponents: {
-      ghe_don: {
-        duong_kinh: 40,
-        chieu_cao: [45, 35],
-        dung_tich_luu_tru_lit: "10-15"
-      },
-      ghe_bang: {
-        dai: 100,
-        rong: 50,
-        cao: 45
-      }
-    },
+    images: [
+      { url: 'Picture/13.jpg', isMain: true, displayOrder: 1 }
+    ],
     material: {
-      vai_boc: { en: "Corduroy Fabric", vi: "Vải Gân (Corduroy)" },
-      mat_ban: { en: "Oak Veneer MDF", vi: "MDF phủ veneer sồi" },
-      khung: { en: "Pine wood & Load-bearing plywood", vi: "Gỗ thông và ván chịu lực" },
-      chan_ghe: { en: "Oak Wood", vi: "Gỗ Sồi" }
+      en: ["Corduroy Fabric", "Oak Veneer MDF top", "Pine wood & Load-bearing plywood frame", "Oak Wood legs"],
+      vi: ["Vải Gân (Corduroy)", "Mặt MDF phủ veneer sồi", "Khung gỗ thông và ván chịu lực", "Chân gỗ Sồi"]
+    },
+    setComponents: {
+      ottoman: {
+        diameter: 40,
+        heights: [45, 35],
+        storageCapacity: "10-15L"
+      },
+      bench: {
+        length: 100,
+        width: 50,
+        height: 45
+      }
     },
     description: {
       en: [
@@ -138,27 +139,22 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '5',
+    itemNo: "VWF-DUO-CIRCLE",
+    category: "Table",
     name: {
       en: "Duo-Circle Natural Wood Tea Table",
       vi: "Bàn Trà Duo-Circle Gỗ Tự Nhiên"
     },
-    itemNo: "VWF-DUO-CIRCLE",
-    image: 'Picture/17.jpg',
-    category: "Table",
+    images: [
+      { url: 'Picture/17.jpg', isMain: true, displayOrder: 1 }
+    ],
     dimensions: {
-      ban_lon: {
-        duong_kinh: 60,
-        chieu_cao: 50
-      },
-      ban_nho: {
-        duong_kinh: 40,
-        chieu_cao: 40
-      }
+      en: ["Large: Ø60xH50cm", "Small: Ø40xH40cm"],
+      vi: ["Lớn: Ø60xH50cm", "Nhỏ: Ø40xH40cm"]
     },
     material: {
-      mat_ban: { en: "Oak Veneer MDF", vi: "MDF phủ Veneer Sồi" },
-      be_mat: { en: "NC or Matte PU Paint", vi: "Sơn NC hoặc PU mờ" },
-      khung_va_chan: { en: "Natural Oak Wood", vi: "Gỗ Sồi tự nhiên" }
+      en: ["Oak Veneer MDF tabletop with NC or Matte PU Paint", "Natural Oak Wood frame and legs"],
+      vi: ["Mặt bàn MDF phủ Veneer Sồi với sơn NC hoặc PU mờ", "Khung và chân gỗ Sồi tự nhiên"]
     },
     description: {
       en: [
@@ -175,25 +171,22 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '6',
+    itemNo: "VWF22A1214-11",
+    category: "Armchair",
     name: {
       en: "Sunny Yellow Kids Armchair",
       vi: "Ghế Armchair Kids Sunny Yellow"
     },
-    itemNo: "VWF22A1214-11",
-    image: 'Picture/21.jpg',
-    category: "Armchair",
+    images: [
+      { url: 'Picture/21.jpg', isMain: true, displayOrder: 1 }
+    ],
     dimensions: {
-      rong: 55,
-      sau: 50,
-      cao: 60,
-      chieu_cao_mat_ngoi: 25,
-      tui_hong: "15x15"
+      en: ["W55 x D50 x H60 cm", "Seat height: 25cm", "Side pocket: 15x15cm"],
+      vi: ["W55 x D50 x H60 cm", "Chiều cao ghế: 25cm", "Túi bên: 15x15cm"]
     },
     material: {
-      vo_boc: { en: "PU Leather or Simili", vi: "Da PU hoặc Simili" },
-      dem_mut: { en: "Monolithic Foam D30/D40", vi: "Mút nguyên khối D30/D40" },
-      khung: { en: "Anti-termite Natural Wood", vi: "Gỗ tự nhiên chống mối mọt" },
-      chan_ghe: { en: "Rubber Wood or Oak", vi: "Gỗ Cao su hoặc Gỗ Sồi" }
+      en: ["PU Leather or Simili upholstery", "Monolithic Foam D30/D40", "Anti-termite Natural Wood frame", "Rubber Wood or Oak legs"],
+      vi: ["Vỏ bọc da PU hoặc Simili", "Đệm mút nguyên khối D30/D40", "Khung gỗ tự nhiên chống mối mọt", "Chân gỗ Cao su hoặc Gỗ Sồi"]
     },
     description: {
       en: [

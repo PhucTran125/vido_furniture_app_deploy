@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Product } from '@/lib/types';
+import { Product, getGalleryImages, getMainImageUrl } from '@/lib/types';
 import { Section } from './ui/Section';
 import { ImageModal } from './ui/ImageModal';
 import { ArrowLeft, ArrowRight, Layers, Ruler, FileText, Package, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
@@ -34,57 +34,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
     }, 100);
   };
 
-  // Manual mapping of product IDs to their specific gallery images
-  // No calculations, just explicit definition as requested
+  // Use the product's images array from the database
+  // The getGalleryImages helper sorts them by displayOrder
   const galleryImages = useMemo(() => {
-    switch (product.id) {
-      case '1':
-        return [
-          '/Picture/1.jpg',
-          '/Picture/2.jpg',
-          '/Picture/3.jpg',
-          '/Picture/4.jpg'
-        ];
-      case '2':
-        return [
-          '/Picture/5.jpg',
-          '/Picture/6.jpg',
-          '/Picture/7.jpg',
-          '/Picture/8.jpg'
-        ];
-      case '3':
-        return [
-          '/Picture/9.jpg',
-          '/Picture/10.jpg',
-          '/Picture/11.jpg',
-          '/Picture/12.jpg'
-        ];
-      case '4':
-        return [
-          '/Picture/13.jpg',
-          '/Picture/14.jpg',
-          '/Picture/15.jpg',
-          '/Picture/16.jpg'
-        ];
-      case '5':
-        return [
-          '/Picture/17.jpg',
-          '/Picture/18.jpg',
-          '/Picture/19.jpg',
-          '/Picture/20.jpg'
-        ];
-      case '6':
-        return [
-          '/Picture/21.jpg',
-          '/Picture/22.jpg',
-          '/Picture/23.jpg',
-          '/Picture/24.jpg'
-        ];
-      default:
-        // Fallback to the main product image if ID is not one of the known ones
-        return [`/${product.image}`];
-    }
-  }, [product.id, product.image]);
+    const images = getGalleryImages(product);
+    // Map to URLs
+    return images.map(img => img.url);
+  }, [product]);
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
@@ -164,10 +120,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
 
   // Unified render function for dimensions and materials
   const renderSpecificationValue = (value: any): React.ReactNode => {
+    // Handle localized content - show only selected language
     if (value && typeof value === 'object' && 'en' in value && 'vi' in value) {
       return <span className="text-gray-900 text-base md:text-lg font-medium">{value[language]}</span>;
     }
 
+    // Handle arrays
     if (Array.isArray(value)) {
       return (
         <span className="text-gray-900 text-base md:text-lg font-medium">
@@ -273,59 +231,56 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
           {/* Left: Product Image Gallery */}
-          <div
-            className="bg-[#F8F8F8] border border-gray-100 rounded-sm overflow-hidden sticky top-40 group relative aspect-square cursor-zoom-in"
-            onClick={() => setIsModalOpen(true)}
-          >
-            {/* Main Image */}
-            <img
-              key={currentImageIndex} // Key forces re-render for simple animation
-              src={galleryImages[currentImageIndex]}
-              alt={`${name} - View ${currentImageIndex + 1}`}
-              className="w-full h-full object-cover transition-opacity duration-300 animate-in fade-in"
-              // Fallback to original if generated path fails
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                // Prevent infinite loop if product.image is also broken or same
-                if (target.src !== window.location.origin + '/' + product.image && !target.src.includes(product.image)) {
-                  target.src = `/${product.image}`;
-                }
-              }}
-            />
+          <div className="space-y-4">
+            {/* Main Large Image */}
+            <div
+              className="bg-[#F8F8F8] border border-gray-200 rounded-lg overflow-hidden group relative aspect-square cursor-zoom-in"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <img
+                key={currentImageIndex}
+                src={galleryImages[currentImageIndex] || '/images/placeholder.jpg'}
+                alt={`${name} - View ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover transition-all duration-300"
+              />
 
-            {/* Hover Zoom Hint */}
-            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-              <div className="bg-white/90 text-primary px-4 py-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">
-                <Maximize2 size={16} />
-                <span className="text-xs font-bold uppercase tracking-widest">Full Screen</span>
+              {/* Hover Zoom Hint */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 text-primary px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
+                  <Maximize2 size={18} />
+                  <span className="text-sm font-bold uppercase tracking-wider">Click to Enlarge</span>
+                </div>
               </div>
+
+              {/* Image Counter */}
+              {galleryImages.length > 1 && (
+                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-medium">
+                  {currentImageIndex + 1} / {galleryImages.length}
+                </div>
+              )}
             </div>
 
-            {/* Navigation Arrows (Stop propagation to prevent modal open) */}
-            <button
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary hover:text-accent p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 focus:opacity-100"
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary hover:text-accent p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 focus:opacity-100"
-              aria-label="Next image"
-            >
-              <ChevronRight size={24} />
-            </button>
-
-            {/* Dots Indicator */}
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 pointer-events-none">
-              {galleryImages.map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`w-2 h-2 rounded-full shadow-sm transition-all duration-300 ${idx === currentImageIndex ? 'bg-accent w-6' : 'bg-white/70'}`}
-                />
-              ))}
-            </div>
+            {/* Thumbnail Grid */}
+            {galleryImages.length > 1 && (
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                {galleryImages.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${index === currentImageIndex
+                      ? 'border-accent shadow-lg scale-105'
+                      : 'border-gray-200 hover:border-gray-400 hover:scale-102'
+                      }`}
+                  >
+                    <img
+                      src={image}
+                      alt={`${name} - Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right: Product Info */}
@@ -366,24 +321,38 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             <div className="flex flex-col gap-6 pt-4">
 
               {/* Dimensions */}
-              {product.dimensions && (
-                <div className="bg-gray-50 p-8 rounded-lg border border-gray-100 w-full">
+              {product.dimensions && product.dimensions[language] && (
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl border border-blue-100 shadow-sm w-full">
                   <h3 className="flex items-center gap-3 font-bold text-primary mb-6 uppercase text-base md:text-lg tracking-widest">
                     <Ruler size={22} className="text-accent" />
                     {language === 'vi' ? 'Kích Thước' : 'Dimensions'}
                   </h3>
-                  {renderSpecificationSection(product.dimensions)}
+                  <ul className="space-y-3">
+                    {product.dimensions[language].map((line, idx) => (
+                      <li key={idx} className="flex gap-3 items-start">
+                        <span className="block w-2 h-2 mt-2 rounded-full bg-accent shrink-0"></span>
+                        <span className="text-gray-900 text-base md:text-lg font-medium leading-relaxed">{line}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
               {/* Materials */}
-              {product.material && (
-                <div className="bg-gray-50 p-8 rounded-lg border border-gray-100 w-full">
+              {product.material && product.material[language] && (
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-xl border border-amber-100 shadow-sm w-full">
                   <h3 className="flex items-center gap-3 font-bold text-primary mb-6 uppercase text-base md:text-lg tracking-widest">
                     <Layers size={22} className="text-accent" />
                     {language === 'vi' ? 'Chất Liệu' : 'Materials'}
                   </h3>
-                  {renderSpecificationSection(product.material)}
+                  <ul className="space-y-3">
+                    {product.material[language].map((line, idx) => (
+                      <li key={idx} className="flex gap-3 items-start">
+                        <span className="block w-2 h-2 mt-2 rounded-full bg-accent shrink-0"></span>
+                        <span className="text-gray-900 text-base md:text-lg font-medium leading-relaxed">{line}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>

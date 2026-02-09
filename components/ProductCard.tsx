@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Product } from '@/lib/types';
+import { Product, getMainImageUrl } from '@/lib/types';
 import { Maximize2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { generateSlug } from '@/lib/utils';
@@ -29,7 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, id }) => {
         className="relative aspect-square bg-[#F9F9F9] overflow-hidden cursor-pointer block"
       >
         <img
-          src={`/${product.image}`}
+          src={getMainImageUrl(product)}
           alt={name}
           loading="lazy"
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"

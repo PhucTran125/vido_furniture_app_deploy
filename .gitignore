@@ -56,3 +56,10 @@ desktop.ini
 
 # AI/Agent (optional - remove if you want to version control this)
 .agent/
+
+.claude
+
+data/
+docs/
+
+scripts/*

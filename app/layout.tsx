@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Open_Sans, Montserrat } from 'next/font/google';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { FloatingContactButton } from '@/components/FloatingContactButton';
+import { ConditionalLayout } from '@/components/ConditionalLayout';
 import './globals.css';
 
 const openSans = Open_Sans({
@@ -45,10 +43,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-sans bg-background text-primary">
         <LanguageProvider>
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-          <FloatingContactButton />
+          <ConditionalLayout>{children}</ConditionalLayout>
         </LanguageProvider>
       </body>
     </html>

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Section } from './ui/Section';
-import { Product } from '@/lib/types';
+import { Product, getMainImageUrl } from '@/lib/types';
 import { Maximize2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { generateSlug } from '@/lib/utils';
@@ -60,7 +60,7 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
             >
               <div className="relative overflow-hidden mb-6 bg-[#F8F8F8] aspect-square border border-gray-100 rounded-sm">
                 <img
-                  src={`/${product.image}`}
+                  src={getMainImageUrl(product)}
                   alt={product.name[language]}
                   loading="lazy"
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 ease-out"

@@ -10,7 +10,7 @@ export async function PUT(
     const { id } = await params;
     const data = await request.json();
 
-    const product = await updateProduct(parseInt(id), data);
+    const product = await updateProduct(id, data);
 
     // Revalidate all relevant pages
     revalidatePath('/');

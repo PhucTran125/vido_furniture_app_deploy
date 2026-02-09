@@ -1,71 +1,108 @@
-import { supabase } from '../supabase/client';
+import { supabase } from '@/lib/supabase/client';
 import { supabaseAdmin } from '../supabase/server';
-import { Product } from '../types';
+import type { Product, LocalizedContent, ProductImage, ProductPrices } from '@/lib/types';
 
-// Database product type (matches Supabase schema)
+// Helper to generate unique slug from name and item number
+function generateSlugFromName(name: string, itemNo: string): string {
+  const nameSlug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  const itemSlug = itemNo.toLowerCase();
+
+  return `${nameSlug}-${itemSlug}`;
+}
+
+// Database product type (matches new Supabase JSONB schema)
 interface DbProduct {
-  id: number;
-  slug: string;
+  id: string;
   item_no: string;
-  name_en: string;
-  name_vi: string;
   category: string;
-  image: string | null;
-  description_en: string[] | null;
-  description_vi: string[] | null;
-  dimensions: any;
-  material: any;
-  set_components: any;
-  created_at: string;
-  updated_at: string;
+  name: LocalizedContent;
+  images: ProductImage[];
+  dimensions?: { en: string[]; vi: string[] };
+  packing_size?: string;
+  material?: { en: string[]; vi: string[] };
+  packaging_type?: LocalizedContent;
+  prices?: ProductPrices;
+  moq?: number;
+  inner_pack?: string;
+  container_capacity?: number;
+  carton_cbm?: number;
+  remark?: LocalizedContent;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Helper to safely parse JSONB fields that might come as strings
+function parseJsonField<T>(value: T | string | undefined | null): T | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return undefined;
+    }
+  }
+  return value as T;
 }
 
 // Convert database product to application Product type
 function dbProductToProduct(dbProduct: DbProduct): Product {
   return {
-    id: String(dbProduct.id), // Convert number to string
+    id: dbProduct.id,
     itemNo: dbProduct.item_no,
-    name: {
-      en: dbProduct.name_en,
-      vi: dbProduct.name_vi,
-    },
-    category: dbProduct.category as any,
-    image: dbProduct.image || '', // Convert null to empty string
-    description: {
-      en: dbProduct.description_en || [],
-      vi: dbProduct.description_vi || [],
-    },
-    dimensions: dbProduct.dimensions,
-    material: dbProduct.material,
-    setComponents: dbProduct.set_components,
+    category: dbProduct.category,
+    name: dbProduct.name,
+    images: dbProduct.images || [],
+    dimensions: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.dimensions),
+    packingSize: dbProduct.packing_size,
+    material: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.material),
+    packagingType: dbProduct.packaging_type,
+    prices: dbProduct.prices,
+    moq: dbProduct.moq,
+    innerPack: dbProduct.inner_pack,
+    containerCapacity: dbProduct.container_capacity,
+    cartonCBM: dbProduct.carton_cbm,
+    remark: dbProduct.remark,
+    isActive: dbProduct.is_active,
+    createdAt: dbProduct.created_at,
+    updatedAt: dbProduct.updated_at,
   };
 }
 
 // Convert application Product to database format
-function productToDbProduct(product: Partial<Product> & { itemNo: string; name: { en: string; vi: string }; category: string }) {
+function productToDbProduct(product: Partial<Product> & { itemNo: string; name: LocalizedContent; category: string }) {
   return {
     item_no: product.itemNo,
-    slug: product.itemNo.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    name_en: product.name.en,
-    name_vi: product.name.vi,
     category: product.category,
-    image: product.image || null,
-    description_en: product.description?.en || null,
-    description_vi: product.description?.vi || null,
+    name: product.name,
+    images: product.images || [],
     dimensions: product.dimensions || null,
+    packing_size: product.packingSize || null,
     material: product.material || null,
-    set_components: product.setComponents || null,
+    packaging_type: product.packagingType || null,
+    prices: product.prices || null,
+    moq: product.moq || null,
+    inner_pack: product.innerPack || null,
+    container_capacity: product.containerCapacity || null,
+    carton_cbm: product.cartonCBM || null,
+    remark: product.remark || null,
+    is_active: product.isActive !== undefined ? product.isActive : true,
   };
 }
 
 /**
- * Get all products from database
- * Used for: Product listing, homepage, search
+ * Get all active products
+ * Used for: Homepage, product listing pages (only shows active products)
  */
 export async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .eq('is_active', true) // Only show active products on website
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -77,26 +114,41 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 /**
- * Get single product by slug
+ * Get single product by slug (generated from product name + item number)
  * Used for: Product detail pages
+ * Slug format: "product-name-item-number" (e.g., "s-2-storage-ottoman-vwf24a2064cg-18")
  */
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  // Extract item number from slug (last segment after final dash sequence)
+  // The item number typically contains dashes, so we need to find where it starts
+  // Pattern: product-name-ITEMNO where ITEMNO matches item_no format
+
+  // Get all active products
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .eq('slug', slug)
-    .single();
+    .eq('is_active', true);
 
   if (error) {
-    if (error.code === 'PGRST116') {
-      // No rows returned
-      return null;
-    }
-    console.error('Error fetching product:', error);
-    throw new Error(`Failed to fetch product: ${error.message}`);
+    console.error('Error fetching products:', error);
+    throw new Error(`Failed to fetch products: ${error.message}`);
   }
 
-  return dbProductToProduct(data);
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  // Find product by generating slug from name+itemNo and matching
+  const product = data.find((p) => {
+    const productSlug = generateSlugFromName(p.name.en, p.item_no);
+    return productSlug === slug;
+  });
+
+  if (!product) {
+    return null;
+  }
+
+  return dbProductToProduct(product);
 }
 
 /**
@@ -119,20 +171,21 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 }
 
 /**
- * Get all product slugs for static generation
+ * Get all product slugs (for static generation)
  * Used for: generateStaticParams in Next.js
  */
 export async function getAllProductSlugs(): Promise<string[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('slug');
+    .select('name, item_no')
+    .eq('is_active', true);
 
   if (error) {
     console.error('Error fetching product slugs:', error);
-    throw new Error(`Failed to fetch product slugs: ${error.message}`);
+    return [];
   }
 
-  return data.map(row => row.slug);
+  return data.map((p) => generateSlugFromName(p.name.en, p.item_no));
 }
 
 /**
@@ -160,23 +213,24 @@ export async function createProduct(product: Partial<Product> & { itemNo: string
  * Update existing product (Admin only)
  * Used for: Admin product editing
  */
-export async function updateProduct(id: number, updates: Partial<Product>): Promise<Product> {
+export async function updateProduct(id: string, updates: Partial<Product>): Promise<Product> {
   const dbUpdates: any = {};
 
   if (updates.itemNo) dbUpdates.item_no = updates.itemNo;
-  if (updates.name) {
-    if (updates.name.en) dbUpdates.name_en = updates.name.en;
-    if (updates.name.vi) dbUpdates.name_vi = updates.name.vi;
-  }
+  if (updates.name) dbUpdates.name = updates.name;
   if (updates.category) dbUpdates.category = updates.category;
-  if (updates.image !== undefined) dbUpdates.image = updates.image || null;
-  if (updates.description) {
-    if (updates.description.en) dbUpdates.description_en = updates.description.en;
-    if (updates.description.vi) dbUpdates.description_vi = updates.description.vi;
-  }
+  if (updates.images !== undefined) dbUpdates.images = updates.images;
   if (updates.dimensions !== undefined) dbUpdates.dimensions = updates.dimensions;
+  if (updates.packingSize !== undefined) dbUpdates.packing_size = updates.packingSize;
   if (updates.material !== undefined) dbUpdates.material = updates.material;
-  if (updates.setComponents !== undefined) dbUpdates.set_components = updates.setComponents;
+  if (updates.packagingType !== undefined) dbUpdates.packaging_type = updates.packagingType;
+  if (updates.prices !== undefined) dbUpdates.prices = updates.prices;
+  if (updates.moq !== undefined) dbUpdates.moq = updates.moq;
+  if (updates.innerPack !== undefined) dbUpdates.inner_pack = updates.innerPack;
+  if (updates.containerCapacity !== undefined) dbUpdates.container_capacity = updates.containerCapacity;
+  if (updates.cartonCBM !== undefined) dbUpdates.carton_cbm = updates.cartonCBM;
+  if (updates.remark !== undefined) dbUpdates.remark = updates.remark;
+  if (updates.isActive !== undefined) dbUpdates.is_active = updates.isActive;
 
   const { data, error } = await supabaseAdmin
     .from('products')
@@ -197,7 +251,7 @@ export async function updateProduct(id: number, updates: Partial<Product>): Prom
  * Delete product (Admin only)
  * Used for: Admin product deletion
  */
-export async function deleteProduct(id: number): Promise<void> {
+export async function deleteProduct(id: string): Promise<void> {
   const { error } = await supabaseAdmin
     .from('products')
     .delete()
@@ -217,7 +271,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .or(`name_en.ilike.%${query}%,name_vi.ilike.%${query}%,item_no.ilike.%${query}%`)
+    .or(`name->>en.ilike.%${query}%,name->>vi.ilike.%${query}%,item_no.ilike.%${query}%`)
+    .eq('is_active', true)
     .order('created_at', { ascending: false });
 
   if (error) {

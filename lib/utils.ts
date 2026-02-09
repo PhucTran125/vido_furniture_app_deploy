@@ -1,12 +1,16 @@
 import { PRODUCTS } from '@/lib/constants';
 import type { Product } from '@/lib/types';
 
-// Helper to generate URL-friendly slug from product
+// Helper to generate URL-friendly slug from product (name + item number)
 export function generateSlug(product: Product): string {
-  return product.name.en
+  const nameSlug = product.name.en
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+
+  const itemSlug = product.itemNo.toLowerCase();
+
+  return `${nameSlug}-${itemSlug}`;
 }
 
 // Get product by slug

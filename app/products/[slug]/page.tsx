@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ProductDetail } from '@/components/ProductDetail';
 import { getProductBySlug, getAllProductSlugs } from '@/lib/db/products';
+import { getMainImageUrl } from '@/lib/types';
 import type { Metadata } from 'next';
 
 // Enable ISR: Revalidate every hour
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: product.name.en,
       description: product.description?.en[0] || description,
-      images: product.image ? [`/${product.image}`] : [],
+      images: [getMainImageUrl(product)],
       type: 'website',
     },
   };

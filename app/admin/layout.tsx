@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Package, LogOut, Home } from 'lucide-react';
@@ -12,24 +12,36 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check authentication on mount (except for login page)
+  // Check authentication on mount
   useEffect(() => {
-    if (pathname !== '/admin/login') {
-      const isAuthenticated = document.cookie.includes('admin_auth=true');
-      if (!isAuthenticated) {
+    const checkAuth = () => {
+      const authCookie = document.cookie.includes('admin_auth=true');
+      setIsAuthenticated(authCookie);
+
+      // Redirect to login if not authenticated and not on login page
+      if (!authCookie && pathname !== '/admin/login') {
         router.push('/admin/login');
       }
-    }
+    };
+
+    checkAuth();
   }, [pathname, router]);
 
   const handleLogout = () => {
     document.cookie = 'admin_auth=; path=/; max-age=0';
+    setIsAuthenticated(false);
     router.push('/admin/login');
   };
 
   // Don't show layout on login page
   if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
+  // Don't show layout if not authenticated
+  if (!isAuthenticated) {
     return <>{children}</>;
   }
 
