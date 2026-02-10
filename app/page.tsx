@@ -1,7 +1,6 @@
 import { Hero } from '@/components/Hero';
 import { Highlights } from '@/components/Highlights';
 import { FeaturedCollection } from '@/components/FeaturedCollection';
-import { ProductGrid } from '@/components/ProductGrid';
 import { Contact } from '@/components/Contact';
 import { getProducts } from '@/lib/db/products';
 
@@ -16,7 +15,6 @@ export default async function HomePage() {
       <Hero />
       <Highlights />
       <FeaturedCollection products={products} />
-      <ProductGrid products={products} />
       <Contact />
     </>
   );

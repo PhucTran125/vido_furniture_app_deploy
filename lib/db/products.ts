@@ -50,7 +50,7 @@ function parseJsonField<T>(value: T | string | undefined | null): T | undefined 
 }
 
 // Convert database product to application Product type
-function dbProductToProduct(dbProduct: DbProduct): Product {
+export function dbProductToProduct(dbProduct: DbProduct): Product {
   return {
     id: dbProduct.id,
     itemNo: dbProduct.item_no,

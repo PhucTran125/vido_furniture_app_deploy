@@ -17,13 +17,6 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
   // Using the first 4 products as featured items
   const featuredProducts = products.slice(0, 4);
 
-  const scrollToProducts = () => {
-    const element = document.getElementById('products');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <Section id="featured" className="bg-[#FFFFFF] !py-12 md:!py-20">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 md:mb-16">
@@ -40,13 +33,13 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
             {t.featured.description}
           </p>
         </div>
-        <button
-          onClick={scrollToProducts}
+        <Link
+          href="/products"
           className="flex items-center gap-3 text-primary text-xs font-black uppercase tracking-[0.2em] hover:text-accent transition-all group"
         >
           {t.featured.viewAll}
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -88,12 +81,12 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
       </div>
 
       <div className="mt-10 md:hidden flex justify-center">
-        <button
-          onClick={scrollToProducts}
+        <Link
+          href="/products"
           className="flex items-center gap-3 bg-primary text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] shadow-xl"
         >
           {t.featured.viewAll} <ArrowRight size={16} />
-        </button>
+        </Link>
       </div>
     </Section>
   );

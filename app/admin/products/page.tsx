@@ -1,14 +1,39 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus, Edit, Trash2, Loader2, Package } from 'lucide-react';
+import { Plus, Edit, Loader2, Package, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { Product } from '@/lib/types';
+
+const PRODUCTS_PER_PAGE = 20;
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products;
+    const q = searchQuery.toLowerCase();
+    return products.filter(p =>
+      p.itemNo.toLowerCase().includes(q) ||
+      p.name.en.toLowerCase().includes(q) ||
+      p.name.vi.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q)
+    );
+  }, [products, searchQuery]);
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     loadProducts();
@@ -23,30 +48,6 @@ export default function AdminProductsPage() {
       console.error('Error loading products:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDelete = async (product: Product) => {
-    if (!confirm(`Are you sure you want to delete "${product.name.en}"?`)) {
-      return;
-    }
-
-    setDeleting(product.id);
-    try {
-      const res = await fetch(`/api/admin/products?id=${product.id}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        setProducts(products.filter(p => p.id !== product.id));
-      } else {
-        alert('Failed to delete product');
-      }
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      alert('Failed to delete product');
-    } finally {
-      setDeleting(null);
     }
   };
 
@@ -75,6 +76,25 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
+        {/* Search Bar */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="relative">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by item number, name, or category..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-transparent"
+            />
+          </div>
+          {searchQuery && (
+            <p className="mt-2 text-xs text-gray-500">
+              {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''} found
+            </p>
+          )}
+        </div>
+
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -96,7 +116,7 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((product) => (
+            {paginatedProducts.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {product.itemNo}
@@ -130,41 +150,71 @@ export default function AdminProductsPage() {
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end gap-2">
-                    <Link
-                      href={`/admin/products/${product.id}/edit`}
-                      className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded transition-colors"
-                    >
-                      <Edit size={18} />
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(product)}
-                      disabled={deleting === product.id}
-                      className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
-                    >
-                      {deleting === product.id ? (
-                        <Loader2 size={18} className="animate-spin" />
-                      ) : (
-                        <Trash2 size={18} />
-                      )}
-                    </button>
-                  </div>
+                  <Link
+                    href={`/admin/products/${product.id}/edit`}
+                    className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded transition-colors inline-flex"
+                  >
+                    <Edit size={18} />
+                  </Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {products.length === 0 && (
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <p className="text-sm text-gray-600">
+              Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–{Math.min(currentPage * PRODUCTS_PER_PAGE, filteredProducts.length)} of {filteredProducts.length}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setCurrentPage(p => p - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`min-w-[36px] h-9 rounded text-sm font-medium transition-colors ${
+                    page === currentPage
+                      ? 'bg-accent text-white'
+                      : 'hover:bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage(p => p + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <Package size={48} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500">No products yet</p>
-            <Link
-              href="/admin/products/new"
-              className="text-accent hover:underline mt-2 inline-block"
-            >
-              Add your first product
-            </Link>
+            {searchQuery ? (
+              <p className="text-gray-500">No products matching &quot;{searchQuery}&quot;</p>
+            ) : (
+              <>
+                <p className="text-gray-500">No products yet</p>
+                <Link
+                  href="/admin/products/new"
+                  className="text-accent hover:underline mt-2 inline-block"
+                >
+                  Add your first product
+                </Link>
+              </>
+            )}
           </div>
         )}
       </div>

@@ -41,7 +41,7 @@ export const Hero: React.FC = () => {
           <Button
             variant="primary"
             className="w-full sm:w-auto px-10 py-4 text-xs sm:text-sm tracking-[0.2em] font-black"
-            onClick={() => scrollToSection('products')}
+            onClick={() => scrollToSection('featured')}
           >
             {t.hero.explore}
           </Button>

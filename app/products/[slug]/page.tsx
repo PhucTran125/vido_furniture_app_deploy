@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { ProductDetail } from '@/components/ProductDetail';
+import { Contact } from '@/components/Contact';
 import { getProductBySlug, getAllProductSlugs } from '@/lib/db/products';
 import { getMainImageUrl } from '@/lib/types';
 import type { Metadata } from 'next';
@@ -50,5 +51,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
-  return <ProductDetail product={product} />;
+  return (
+    <>
+      <ProductDetail product={product} />
+      <Contact />
+    </>
+  );
 }
