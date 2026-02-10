@@ -210,7 +210,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   };
 
   const name = typeof product.name === 'object' ? product.name[language] : product.name;
-  const description = product.description ? product.description[language] : undefined;
+  const descriptionRaw = product.description ? product.description[language] : undefined;
+  const description = Array.isArray(descriptionRaw) ? descriptionRaw : descriptionRaw ? [descriptionRaw] : undefined;
 
   return (
     <div className="bg-white min-h-screen">
@@ -328,7 +329,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
                     {language === 'vi' ? 'Kích Thước' : 'Dimensions'}
                   </h3>
                   <ul className="space-y-3">
-                    {product.dimensions[language].map((line, idx) => (
+                    {(Array.isArray(product.dimensions[language]) ? product.dimensions[language] : [product.dimensions[language]]).map((line, idx) => (
                       <li key={idx} className="flex gap-3 items-start">
                         <span className="block w-2 h-2 mt-2 rounded-full bg-accent shrink-0"></span>
                         <span className="text-gray-900 text-base md:text-lg font-medium leading-relaxed">{line}</span>
@@ -346,7 +347,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
                     {language === 'vi' ? 'Chất Liệu' : 'Materials'}
                   </h3>
                   <ul className="space-y-3">
-                    {product.material[language].map((line, idx) => (
+                    {(Array.isArray(product.material[language]) ? product.material[language] : [product.material[language]]).map((line, idx) => (
                       <li key={idx} className="flex gap-3 items-start">
                         <span className="block w-2 h-2 mt-2 rounded-full bg-accent shrink-0"></span>
                         <span className="text-gray-900 text-base md:text-lg font-medium leading-relaxed">{line}</span>
