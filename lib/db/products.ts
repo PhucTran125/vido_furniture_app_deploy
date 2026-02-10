@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase/client';
 import { supabaseAdmin } from '../supabase/server';
 import type { Product, LocalizedContent, ProductImage, ProductPrices } from '@/lib/types';
-
+// test change commit's author
 // Helper to generate unique slug from name and item number
 function generateSlugFromName(name: string, itemNo: string): string {
   const nameSlug = name
