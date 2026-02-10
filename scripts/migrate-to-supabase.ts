@@ -39,7 +39,7 @@ async function migrateProducts() {
         name_en: product.name.en,
         name_vi: product.name.vi,
         category: product.category,
-        image: product.image || null,
+        image: product.images || null,
         description_en: product.description?.en || null,
         description_vi: product.description?.vi || null,
         dimensions: product.dimensions || null,

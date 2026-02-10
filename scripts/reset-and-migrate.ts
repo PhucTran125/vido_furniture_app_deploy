@@ -1,4 +1,4 @@
-// Delete all products and re-migrate with correct slugs
+// Reset database and migrate products with new JSONB schema
 // IMPORTANT: Load environment variables FIRST
 import { config } from 'dotenv';
 config({ path: '.env.local' });
@@ -34,7 +34,7 @@ async function resetAndMigrate() {
   const { error: deleteError } = await supabaseAdmin
     .from('products')
     .delete()
-    .neq('id', 0); // Delete all rows
+    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows
 
   if (deleteError) {
     console.error('❌ Error deleting products:', deleteError);
@@ -42,8 +42,8 @@ async function resetAndMigrate() {
   }
   console.log('✅ All existing products deleted\n');
 
-  // Step 2: Migrate products with correct slugs
-  console.log('🚀 Starting product migration with name-based slugs...\n');
+  // Step 2: Migrate products with new JSONB schema
+  console.log('🚀 Starting product migration with JSONB schema...\n');
 
   let successCount = 0;
   let errorCount = 0;
@@ -52,24 +52,30 @@ async function resetAndMigrate() {
     try {
       console.log(`📦 Migrating: ${product.name.en} (${product.itemNo})`);
 
-      // Generate slug from product name (English) to match frontend URL generation
-      const slug = product.name.en
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
-
       const dbProduct = {
         item_no: product.itemNo,
-        slug,
-        name_en: product.name.en,
-        name_vi: product.name.vi,
         category: product.category,
-        image: product.image || null,
-        description_en: product.description?.en || null,
-        description_vi: product.description?.vi || null,
-        dimensions: product.dimensions || null,
+
+        // JSONB fields
+        name: product.name,
+        description: product.description || null,
         material: product.material || null,
+        packaging_type: product.packagingType || null,
+        remark: product.remark || null,
+        images: product.images,
+        prices: product.prices || null,
+
+        // Simple fields
+        dimensions: product.dimensions || null,
+        packing_size: product.packingSize || null,
+        moq: product.moq || null,
+        inner_pack: product.innerPack || null,
+        container_capacity: product.containerCapacity || null,
+        carton_cbm: product.cartonCBM || null,
         set_components: product.setComponents || null,
+
+        // Metadata
+        is_active: product.isActive !== false, // Default to true
       };
 
       const { data, error } = await supabaseAdmin
@@ -82,7 +88,7 @@ async function resetAndMigrate() {
         console.error(`   ❌ Error: ${error.message}`);
         errorCount++;
       } else {
-        console.log(`   ✅ Success! ID: ${data.id}, Slug: ${data.slug}`);
+        console.log(`   ✅ Success! ID: ${data.id}`);
         successCount++;
       }
     } catch (err) {
@@ -102,8 +108,8 @@ async function resetAndMigrate() {
   if (errorCount === 0) {
     console.log('🎉 All products migrated successfully!');
     console.log('\n💡 Next steps:');
-    console.log('   1. Refresh your browser to test the product detail pages');
-    console.log('   2. All product URLs should now work correctly\n');
+    console.log('   1. Refresh your browser to test the products');
+    console.log('   2. Verify all product data displays correctly\n');
   } else {
     console.log('⚠️  Some products failed to migrate. Check the errors above.');
   }
