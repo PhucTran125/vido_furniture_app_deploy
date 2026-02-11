@@ -26,7 +26,7 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
               {t.featured.badge}
             </span>
           </div>
-          <h2 className="font-heading font-black text-4xl md:text-5xl text-primary mb-6 leading-tight">
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-primary mb-6 leading-tight">
             {t.featured.title}
           </h2>
           <p className="text-gray-500 leading-relaxed text-lg font-light">

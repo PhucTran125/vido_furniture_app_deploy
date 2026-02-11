@@ -219,7 +219,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const description = Array.isArray(descriptionRaw) ? descriptionRaw : descriptionRaw ? [descriptionRaw] : undefined;
 
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen">
       {/* Breadcrumb / Back Navigation */}
       <div className="bg-gray-50 border-b border-gray-200 sticky top-20 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -240,7 +240,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
           <div className="space-y-4">
             {/* Main Large Image */}
             <div
-              className="bg-[#F8F8F8] border border-gray-200 rounded-lg overflow-hidden group relative aspect-square cursor-zoom-in"
+              className="bg-[#F8F8F8] border border-gray-100 rounded-sm overflow-hidden sticky top-40 group relative aspect-square cursor-zoom-in"
               onClick={() => setIsModalOpen(true)}
             >
               <img
@@ -251,10 +251,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
               />
 
               {/* Hover Zoom Hint */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 flex items-center justify-center">
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/95 text-primary px-6 py-3 rounded-full shadow-xl flex items-center gap-2">
-                  <Maximize2 size={18} />
-                  <span className="text-sm font-bold uppercase tracking-wider">Click to Enlarge</span>
+              <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                <div className="bg-white/90 text-primary px-4 py-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">
+                  <Maximize2 size={16} />
+                  <span className="text-xs font-bold uppercase tracking-widest">Full Screen</span>
                 </div>
               </div>
 
@@ -328,7 +328,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
 
               {/* Dimensions */}
               {product.dimensions && product.dimensions[language] && (
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl border border-blue-100 shadow-sm w-full">
+                <div className="bg-gray-50 p-8 rounded-lg border border-gray-100 w-full">
                   <h3 className="flex items-center gap-3 font-bold text-primary mb-6 uppercase text-base md:text-lg tracking-widest">
                     <Ruler size={22} className="text-accent" />
                     {language === 'vi' ? 'Kích Thước' : 'Dimensions'}
@@ -346,7 +346,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
 
               {/* Materials */}
               {product.material && product.material[language] && (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-xl border border-amber-100 shadow-sm w-full">
+                <div className="bg-gray-50 p-8 rounded-lg border border-gray-100 w-full">
                   <h3 className="flex items-center gap-3 font-bold text-primary mb-6 uppercase text-base md:text-lg tracking-widest">
                     <Layers size={22} className="text-accent" />
                     {language === 'vi' ? 'Chất Liệu' : 'Materials'}

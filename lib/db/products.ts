@@ -21,6 +21,7 @@ interface DbProduct {
   category: string;
   name: LocalizedContent;
   images: ProductImage[];
+  description?: { en: string[]; vi: string[] };
   dimensions?: { en: string[]; vi: string[] };
   packing_size?: string;
   material?: { en: string[]; vi: string[] };
@@ -57,6 +58,7 @@ export function dbProductToProduct(dbProduct: DbProduct): Product {
     category: dbProduct.category,
     name: dbProduct.name,
     images: dbProduct.images || [],
+    description: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.description),
     dimensions: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.dimensions),
     packingSize: dbProduct.packing_size,
     material: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.material),
@@ -80,6 +82,7 @@ function productToDbProduct(product: Partial<Product> & { itemNo: string; name: 
     category: product.category,
     name: product.name,
     images: product.images || [],
+    description: product.description || null,
     dimensions: product.dimensions || null,
     packing_size: product.packingSize || null,
     material: product.material || null,
@@ -220,6 +223,7 @@ export async function updateProduct(id: string, updates: Partial<Product>): Prom
   if (updates.name) dbUpdates.name = updates.name;
   if (updates.category) dbUpdates.category = updates.category;
   if (updates.images !== undefined) dbUpdates.images = updates.images;
+  if (updates.description !== undefined) dbUpdates.description = updates.description;
   if (updates.dimensions !== undefined) dbUpdates.dimensions = updates.dimensions;
   if (updates.packingSize !== undefined) dbUpdates.packing_size = updates.packingSize;
   if (updates.material !== undefined) dbUpdates.material = updates.material;

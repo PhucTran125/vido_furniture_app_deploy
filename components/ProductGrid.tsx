@@ -14,12 +14,12 @@ import { Search, Filter, X } from 'lucide-react';
 export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   // Get unique categories from products
   const categories = useMemo(() => {
     const cats = new Set(products.map(p => p.category));
-    return ['all', ...Array.from(cats)];
+    return ['All', ...Array.from(cats)];
   }, [products]);
 
   // Filter products based on search and category
@@ -30,7 +30,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
         product.name.vi.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.itemNo.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
@@ -97,7 +97,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
 
       {/* Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
