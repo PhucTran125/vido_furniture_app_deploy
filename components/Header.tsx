@@ -1,23 +1,31 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Globe, ChevronDown, Check } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, Check, Heart, Trash2, Send } from 'lucide-react';
 import { Button } from './ui/Button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { Product, getMainImageUrl } from '@/lib/types';
+import { generateSlug } from '@/lib/utils';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const { wishlist, wishlistCount, removeFromWishlist } = useWishlist();
   const pathname = usePathname();
 
   // Dropdown states
   const [isDesktopLangOpen, setIsDesktopLangOpen] = useState(false);
   const [isMobileLangOpen, setIsMobileLangOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
 
   const desktopLangRef = useRef<HTMLDivElement>(null);
   const mobileLangRef = useRef<HTMLDivElement>(null);
+  const wishlistPanelRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -33,7 +41,6 @@ export const Header: React.FC = () => {
 
   const scrollToSection = (sectionId: string) => {
     setIsMenuOpen(false);
-    // Small delay to ensure navigation completes
     setTimeout(() => {
       const element = document.getElementById(sectionId);
       if (element) {
@@ -41,6 +48,33 @@ export const Header: React.FC = () => {
       }
     }, 100);
   };
+
+  // Fetch wishlist products when panel opens
+  const fetchWishlistProducts = useCallback(async () => {
+    if (wishlist.length === 0) {
+      setWishlistProducts([]);
+      return;
+    }
+    setLoadingWishlist(true);
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const allProducts: Product[] = await res.json();
+        const filtered = allProducts.filter((p) => wishlist.includes(p.id));
+        setWishlistProducts(filtered);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setLoadingWishlist(false);
+    }
+  }, [wishlist]);
+
+  useEffect(() => {
+    if (isWishlistOpen) {
+      fetchWishlistProducts();
+    }
+  }, [isWishlistOpen, fetchWishlistProducts]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -51,12 +85,20 @@ export const Header: React.FC = () => {
       if (mobileLangRef.current && !mobileLangRef.current.contains(event.target as Node)) {
         setIsMobileLangOpen(false);
       }
+      if (wishlistPanelRef.current && !wishlistPanelRef.current.contains(event.target as Node)) {
+        setIsWishlistOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Close wishlist on route change
+  useEffect(() => {
+    setIsWishlistOpen(false);
+  }, [pathname]);
 
   const navLinks: Array<{ label: string; href: string; id: string; sectionId?: string }> = [
     { label: t.nav.home, href: '/', id: 'home' },
@@ -88,6 +130,14 @@ export const Header: React.FC = () => {
       </button>
     </>
   );
+
+  const handleInquireAll = () => {
+    setIsWishlistOpen(false);
+    setTimeout(() => {
+      const el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-md border-b border-gray-100">
@@ -130,6 +180,111 @@ export const Header: React.FC = () => {
               )
             ))}
 
+            {/* Wishlist Icon */}
+            <div className="relative" ref={wishlistPanelRef}>
+              <button
+                onClick={() => setIsWishlistOpen(!isWishlistOpen)}
+                className="relative p-2 text-gray-600 hover:text-accent transition-colors focus:outline-none"
+                aria-label="Wishlist"
+              >
+                <Heart size={20} className={wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Wishlist Dropdown Panel */}
+              {isWishlistOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-100 overflow-hidden z-50">
+                  {/* Panel Header */}
+                  <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-primary">{t.wishlist.title} ({wishlistCount})</h3>
+                    <button
+                      onClick={() => setIsWishlistOpen(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+
+                  {/* Panel Body */}
+                  <div className="max-h-80 overflow-y-auto">
+                    {loadingWishlist ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : wishlistProducts.length === 0 ? (
+                      <div className="px-4 py-8 text-center">
+                        <Heart size={32} className="mx-auto text-gray-300 mb-3" />
+                        <p className="text-sm font-semibold text-gray-500">{t.wishlist.empty}</p>
+                        <p className="text-xs text-gray-400 mt-1">{t.wishlist.emptyDesc}</p>
+                      </div>
+                    ) : (
+                      wishlistProducts.map((product) => {
+                        const slug = generateSlug(product);
+                        const name = product.name[language];
+                        return (
+                          <div
+                            key={product.id}
+                            className="flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+                          >
+                            {/* Product Image */}
+                            <Link
+                              href={`/products/${slug}`}
+                              onClick={() => setIsWishlistOpen(false)}
+                              className="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden"
+                            >
+                              <img
+                                src={getMainImageUrl(product)}
+                                alt={name}
+                                className="w-full h-full object-cover"
+                              />
+                            </Link>
+
+                            {/* Product Info */}
+                            <div className="flex-1 min-w-0">
+                              <Link
+                                href={`/products/${slug}`}
+                                onClick={() => setIsWishlistOpen(false)}
+                                className="text-sm font-semibold text-primary hover:text-accent transition-colors line-clamp-1 block"
+                              >
+                                {name}
+                              </Link>
+                              <p className="text-[10px] text-gray-400 uppercase tracking-wider">{product.category}</p>
+                            </div>
+
+                            {/* Remove Button */}
+                            <button
+                              onClick={() => removeFromWishlist(product.id)}
+                              className="p-1.5 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+                              title={t.wishlist.remove}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Panel Footer */}
+                  {wishlistProducts.length > 0 && (
+                    <div className="px-4 py-3 border-t border-gray-100">
+                      <button
+                        onClick={handleInquireAll}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent/90 transition-colors"
+                      >
+                        <Send size={14} />
+                        {t.wishlist.inquireAll}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="relative" ref={desktopLangRef}>
               <button
                 onClick={() => setIsDesktopLangOpen(!isDesktopLangOpen)}
@@ -156,6 +311,20 @@ export const Header: React.FC = () => {
 
           {/* Mobile Menu & Language */}
           <div className="flex items-center gap-3 md:hidden">
+            {/* Mobile Wishlist Icon */}
+            <button
+              onClick={() => setIsWishlistOpen(!isWishlistOpen)}
+              className="relative p-2 text-gray-600 hover:text-accent transition-colors"
+              aria-label="Wishlist"
+            >
+              <Heart size={20} className={wishlistCount > 0 ? 'fill-red-500 text-red-500' : ''} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
+                  {wishlistCount > 99 ? '99+' : wishlistCount}
+                </span>
+              )}
+            </button>
+
             <div className="relative" ref={mobileLangRef}>
               <button
                 onClick={() => setIsMobileLangOpen(!isMobileLangOpen)}
@@ -183,6 +352,90 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Wishlist Panel (full-width below header) */}
+      {isWishlistOpen && (
+        <div
+          ref={wishlistPanelRef}
+          className="md:hidden absolute left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-50"
+        >
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="font-bold text-sm text-primary">{t.wishlist.title} ({wishlistCount})</h3>
+            <button
+              onClick={() => setIsWishlistOpen(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="max-h-64 overflow-y-auto">
+            {loadingWishlist ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : wishlistProducts.length === 0 ? (
+              <div className="px-4 py-8 text-center">
+                <Heart size={32} className="mx-auto text-gray-300 mb-3" />
+                <p className="text-sm font-semibold text-gray-500">{t.wishlist.empty}</p>
+                <p className="text-xs text-gray-400 mt-1">{t.wishlist.emptyDesc}</p>
+              </div>
+            ) : (
+              wishlistProducts.map((product) => {
+                const slug = generateSlug(product);
+                const name = product.name[language];
+                return (
+                  <div
+                    key={product.id}
+                    className="flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-0"
+                  >
+                    <Link
+                      href={`/products/${slug}`}
+                      onClick={() => setIsWishlistOpen(false)}
+                      className="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden"
+                    >
+                      <img
+                        src={getMainImageUrl(product)}
+                        alt={name}
+                        className="w-full h-full object-cover"
+                      />
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/products/${slug}`}
+                        onClick={() => setIsWishlistOpen(false)}
+                        className="text-sm font-semibold text-primary hover:text-accent transition-colors line-clamp-1 block"
+                      >
+                        {name}
+                      </Link>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wider">{product.category}</p>
+                    </div>
+                    <button
+                      onClick={() => removeFromWishlist(product.id)}
+                      className="p-1.5 text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+                      title={t.wishlist.remove}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {wishlistProducts.length > 0 && (
+            <div className="px-4 py-3 border-t border-gray-100">
+              <button
+                onClick={handleInquireAll}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent/90 transition-colors"
+              >
+                <Send size={14} />
+                {t.wishlist.inquireAll}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Mobile Navigation */}
       {isMenuOpen && (

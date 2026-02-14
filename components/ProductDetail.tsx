@@ -7,6 +7,7 @@ import { Section } from './ui/Section';
 import { ImageModal } from './ui/ImageModal';
 import { ArrowLeft, ArrowRight, Layers, Ruler, FileText, Package, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 interface ProductDetailProps {
   product: Product;
@@ -14,6 +15,7 @@ interface ProductDetailProps {
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const { t, language } = useLanguage();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -386,13 +388,25 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
 
             {/* Action Buttons */}
             <div className="pt-8">
-              <button
-                onClick={scrollToContact}
-                className="w-full sm:w-auto bg-primary text-white px-10 py-5 font-bold uppercase tracking-[0.2em] text-sm md:text-base hover:bg-accent transition-colors shadow-xl flex items-center justify-center gap-3"
-              >
-                {t.card.inquire}
-                <ArrowRight size={20} />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={scrollToContact}
+                  className="w-full sm:w-auto bg-primary text-white px-10 py-5 font-bold uppercase tracking-[0.2em] text-sm md:text-base hover:bg-accent transition-colors shadow-xl flex items-center justify-center gap-3"
+                >
+                  {t.card.inquire}
+                  <ArrowRight size={20} />
+                </button>
+                <button
+                  onClick={() => toggleWishlist(product.id)}
+                  className={`w-full sm:w-auto px-8 py-5 font-bold uppercase tracking-[0.2em] text-sm md:text-base transition-colors shadow-xl flex items-center justify-center border-2 ${
+                    isInWishlist(product.id)
+                      ? 'bg-red-50 border-red-400 text-red-500'
+                      : 'bg-white border-gray-300 text-primary hover:border-accent hover:text-accent'
+                  }`}
+                >
+                  {isInWishlist(product.id) ? t.card.inWishlist : t.card.addToWishlist}
+                </button>
+              </div>
               <p className="mt-4 text-sm text-gray-500 text-center sm:text-left italic">
                 * {language === 'vi' ? 'Liên hệ để nhận báo giá chi tiết và tùy chọn' : 'Contact for detailed quotation and customization options'}
               </p>
@@ -409,6 +423,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         imageUrl={galleryImages[currentImageIndex]}
         altText={name}
       />
+
     </div>
   );
 };

@@ -4,9 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Section } from './ui/Section';
 import { Product, getMainImageUrl } from '@/lib/types';
-import { Maximize2, ArrowRight, Heart, Send } from 'lucide-react';
+import { Maximize2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useWishlist } from '@/contexts/WishlistContext';
 import { generateSlug } from '@/lib/utils';
 
 interface FeaturedCollectionProps {
@@ -15,18 +14,8 @@ interface FeaturedCollectionProps {
 
 export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products }) => {
   const { t, language } = useLanguage();
-  const { toggleWishlist, isInWishlist } = useWishlist();
   // Using the first 4 products as featured items
   const featuredProducts = products.slice(0, 4);
-
-  const handleInquiryClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <Section id="featured" className="bg-[#FFFFFF] !py-12 md:!py-20">
@@ -56,16 +45,13 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {featuredProducts.map((product) => {
           const slug = generateSlug(product);
-          const wishlisted = isInWishlist(product.id);
           return (
-            <div
+            <Link
               key={product.id}
+              href={`/products/${slug}`}
               className="group cursor-pointer flex flex-col h-full"
             >
-              <Link
-                href={`/products/${slug}`}
-                className="relative overflow-hidden mb-6 bg-[#F8F8F8] aspect-square border border-gray-100 rounded-sm block"
-              >
+              <div className="relative overflow-hidden mb-6 bg-[#F8F8F8] aspect-square border border-gray-100 rounded-sm">
                 <img
                   src={getMainImageUrl(product)}
                   alt={product.name[language]}
@@ -80,44 +66,16 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
                     {t.featured.quickView}
                   </div>
                 </div>
-              </Link>
+              </div>
 
               <div className="space-y-1">
                 <p className="text-[9px] text-gray-400 font-mono tracking-widest uppercase">{product.itemNo}</p>
-                <Link href={`/products/${slug}`}>
-                  <h3 className="font-heading font-bold text-lg text-primary group-hover:text-accent transition-colors">
-                    {product.name[language]}
-                  </h3>
-                </Link>
+                <h3 className="font-heading font-bold text-lg text-primary group-hover:text-accent transition-colors">
+                  {product.name[language]}
+                </h3>
                 <p className="text-[10px] text-accent font-bold uppercase tracking-widest pt-1">{product.category}</p>
-
-                {/* Hover Action Buttons */}
-                <div className="flex items-center gap-3 pt-2 max-h-0 opacity-0 group-hover:max-h-16 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                  <button
-                    onClick={handleInquiryClick}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent/90 transition-colors"
-                  >
-                    <Send size={13} />
-                    {t.card.inquire}
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleWishlist(product.id);
-                    }}
-                    className={`p-2 rounded-sm border transition-colors ${
-                      wishlisted
-                        ? 'bg-red-50 border-red-200 text-red-500'
-                        : 'bg-gray-50 border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200'
-                    }`}
-                    title={wishlisted ? t.card.removedFromWishlist : t.card.addedToWishlist}
-                  >
-                    <Heart size={16} className={wishlisted ? 'fill-current' : ''} />
-                  </button>
-                </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

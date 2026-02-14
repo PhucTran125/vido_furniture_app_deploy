@@ -39,6 +39,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { PageType } from '@/lib/types';
+import { ContactModal } from './ContactModal';
 
 interface HighlightDetailProps {
   type: PageType;
@@ -51,6 +52,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [certLightbox, setCertLightbox] = useState<{ src: string; alt: string; pdf: string } | null>(null);
   const [certZoom, setCertZoom] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   const openCertLightbox = useCallback((src: string, alt: string, pdf: string) => {
     setCertLightbox({ src, alt, pdf });
@@ -247,7 +249,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                   {t.highlights.serviceCTADesc}
                 </p>
                 <button
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => setIsContactOpen(true)}
                   className="bg-primary text-white px-8 py-4 font-bold uppercase tracking-[0.2em] hover:bg-accent transition-colors shadow-lg"
                 >
                   {t.highlights.serviceBtn}
@@ -652,6 +654,8 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
           </div>
         </div>
       )}
+
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
   );
 };

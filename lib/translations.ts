@@ -83,7 +83,7 @@ export const translations = {
 
       // Factory Section
       factoryIntroTitle: 'Manufacturing Excellence & Capability',
-      factoryIntroDesc: 'The manufacturing capability of Vido Furniture Co., Ltd. is meticulously structured to ensure efficiency and precision at every stage of production.',
+      factoryIntroDesc: 'The manufacturing capability of Vido Furniture JSC is meticulously structured to ensure efficiency and precision at every stage of production.',
       manufacturingPoints: [
         { title: "Precision Cutting", desc: "The process begins with selecting high-quality materials, precisely cut using advanced machinery to reduce waste and enhance accuracy." },
         { title: "Exquisite Sewing", desc: "Skilled artisans employ refined craftsmanship techniques to stitch components, ensuring both structural integrity and premium aesthetic quality." },
@@ -98,7 +98,7 @@ export const translations = {
       // Sustainability Section
       susValues: 'Our Values',
       susTitle: 'Commitment to Quality and Sustainability',
-      susIntro: 'Vido Furniture Co., Ltd. is established with a strong commitment to quality and sustainability guiding all operations.',
+      susIntro: 'Vido Furniture JSC is established with a strong commitment to quality and sustainability guiding all operations.',
       susP1Title: 'Responsible Sourcing',
       susP1Desc: 'We prioritize the procurement of environmentally friendly materials from sustainably managed forests to minimize environmental impact.',
       susP2Title: 'Energy-Efficient Production',
@@ -139,6 +139,16 @@ export const translations = {
       inquire: 'Inquire',
       addedToWishlist: 'Added to wishlist',
       removedFromWishlist: 'Removed from wishlist',
+      addToWishlist: 'Add to Wishlist',
+      inWishlist: 'In Wishlist',
+    },
+    wishlist: {
+      title: 'My Wishlist',
+      empty: 'Your wishlist is empty.',
+      emptyDesc: 'Browse products and tap the heart icon to save items here.',
+      remove: 'Remove',
+      viewProduct: 'View',
+      inquireAll: 'Inquire About All Items',
     },
     contact: {
       title: 'Contact Us',
@@ -283,7 +293,7 @@ export const translations = {
       // Sustainability Section
       susValues: 'Giá Trị Cốt Lõi',
       susTitle: 'Cam Kết Về Chất Lượng Và Bền Vững',
-      susIntro: 'VIDO Furniture Co., Ltd. được thành lập với cam kết mạnh mẽ về chất lượng và tính bền vững, kim chỉ nam cho mọi hoạt động.',
+      susIntro: 'VIDO Furniture JSC được thành lập với cam kết mạnh mẽ về chất lượng và tính bền vững, kim chỉ nam cho mọi hoạt động.',
       susP1Title: 'Nguồn Cung Ứng Trách Nhiệm',
       susP1Desc: 'Chúng tôi ưu tiên thu mua nguyên liệu thân thiện với môi trường từ các khu rừng được quản lý bền vững để giảm thiểu tác động đến môi trường.',
       susP2Title: 'Sản Xuất Tiết Kiệm Năng Lượng',
@@ -324,6 +334,16 @@ export const translations = {
       inquire: 'Hỏi Hàng',
       addedToWishlist: 'Đã thêm vào yêu thích',
       removedFromWishlist: 'Đã xóa khỏi yêu thích',
+      addToWishlist: 'Thêm Yêu Thích',
+      inWishlist: 'Đã Yêu Thích',
+    },
+    wishlist: {
+      title: 'Danh Sách Yêu Thích',
+      empty: 'Danh sách yêu thích trống.',
+      emptyDesc: 'Duyệt sản phẩm và nhấn biểu tượng trái tim để lưu.',
+      remove: 'Xóa',
+      viewProduct: 'Xem',
+      inquireAll: 'Hỏi Hàng Tất Cả',
     },
     contact: {
       title: 'Liên Hệ Với Chúng Tôi',
