@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { ArrowLeft, Save, Loader2, Plus, X, Upload, Star, Eye, EyeOff, Trash2 } from 'lucide-react';
@@ -18,17 +18,31 @@ function toStringArray(val: unknown): string[] {
   return [];
 }
 
+interface CategoryOption {
+  id: number;
+  name: string;
+}
+
 export function ProductForm({ product, mode }: ProductFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+
+  useEffect(() => {
+    fetch('/api/admin/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(() => {});
+  }, []);
 
   const [formData, setFormData] = useState({
     itemNo: product?.itemNo || '',
     nameEn: product?.name.en || '',
     nameVi: product?.name.vi || '',
-    category: product?.category || 'Ottoman',
+    category: product?.category || '',
+    categoryId: product?.categoryId || '',
     images: product?.images || [],
     isActive: product?.isActive !== undefined ? product.isActive : true,
 
@@ -141,10 +155,12 @@ export function ProductForm({ product, mode }: ProductFormProps) {
     setSaving(true);
 
     try {
+      const selectedCategory = categories.find(c => c.id === Number(formData.categoryId));
       const payload: any = {
         itemNo: formData.itemNo,
         name: { en: formData.nameEn, vi: formData.nameVi },
-        category: formData.category,
+        category: selectedCategory?.name || formData.category,
+        categoryId: formData.categoryId ? Number(formData.categoryId) : null,
         images: formData.images,
         isActive: formData.isActive,
       };
@@ -304,16 +320,18 @@ export function ProductForm({ product, mode }: ProductFormProps) {
               placeholder="e.g., VWF23A1424SC-1-PU-43" />
           </div>
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
-            <select id="category" required value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+            <select id="categoryId" required value={formData.categoryId}
+              onChange={(e) => {
+                const catId = e.target.value;
+                const cat = categories.find(c => c.id === Number(catId));
+                setFormData({ ...formData, categoryId: catId, category: cat?.name || '' });
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent">
-              <option value="Bench">Bench</option>
-              <option value="Ottoman">Ottoman</option>
-              <option value="Stool">Stool</option>
-              <option value="Table">Table</option>
-              <option value="Storage">Storage</option>
-              <option value="Armchair">Armchair</option>
+              <option value="">Select a category...</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
             </select>
           </div>
           <div>

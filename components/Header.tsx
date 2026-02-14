@@ -99,11 +99,11 @@ export const Header: React.FC = () => {
               href="/"
               className="flex items-center gap-3 group focus:outline-none"
             >
-              <svg className="h-14 w-auto" viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 50 L60 15 L130 15 L80 50 Z" fill="#8CC63F" />
-                <path d="M90 50 L180 10 L270 50 L270 110 L230 110 L230 70 L180 45 L130 70 L90 50 Z" fill="#1a1a1a" />
-                <text x="60" y="110" fontFamily="Montserrat, sans-serif" fontWeight="700" fontSize="55" fill="#F39200" letterSpacing="4">VIDO</text>
-              </svg>
+              <img
+                src="/logo.jpg"
+                alt="VIDO Furniture"
+                className="h-20 w-auto object-contain"
+              />
             </Link>
           </div>
 

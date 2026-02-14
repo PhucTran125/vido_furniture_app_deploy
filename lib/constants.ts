@@ -5,11 +5,12 @@ export const COMPANY_INFO = {
   address: "Phuong La Village, Thai Phuong Commune, Hung Ha District, Thai Binh Province, Vietnam",
   hotline: "0914.717.866",
   contacts: [
-    { name: "MR. HUY", nameVi: "MR. HUY", phone: "0927656111" },
-    { name: "MS. BẢO YẾN", nameVi: "MS. BẢO YẾN", phone: "0968959859" }
+    { name: "Sales 01", nameVi: "Sales 01", email: "sales01@vidointernational.com", phone: "(+86) 13960794413" },
+    { name: "Sales 02", nameVi: "Sales 02", email: "sales02@vidointernational.com", phone: "(+84) 792089618" }
   ],
   taxCode: "1001297080",
-  email: "sales@vidofurniture.com"
+  email: "sales01@vidointernational.com",
+  whatsappNumber: "8613960794413"
 };
 
 export const PRODUCTS: Product[] = [

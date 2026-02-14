@@ -19,6 +19,7 @@ interface DbProduct {
   id: string;
   item_no: string;
   category: string;
+  category_id?: number;
   name: LocalizedContent;
   images: ProductImage[];
   description?: { en: string[]; vi: string[] };
@@ -56,6 +57,7 @@ export function dbProductToProduct(dbProduct: DbProduct): Product {
     id: dbProduct.id,
     itemNo: dbProduct.item_no,
     category: dbProduct.category,
+    categoryId: dbProduct.category_id,
     name: dbProduct.name,
     images: dbProduct.images || [],
     description: parseJsonField<{ en: string[]; vi: string[] }>(dbProduct.description),
@@ -80,6 +82,7 @@ function productToDbProduct(product: Partial<Product> & { itemNo: string; name: 
   return {
     item_no: product.itemNo,
     category: product.category,
+    category_id: product.categoryId || null,
     name: product.name,
     images: product.images || [],
     description: product.description || null,
@@ -222,6 +225,7 @@ export async function updateProduct(id: string, updates: Partial<Product>): Prom
   if (updates.itemNo) dbUpdates.item_no = updates.itemNo;
   if (updates.name) dbUpdates.name = updates.name;
   if (updates.category) dbUpdates.category = updates.category;
+  if (updates.categoryId !== undefined) dbUpdates.category_id = updates.categoryId;
   if (updates.images !== undefined) dbUpdates.images = updates.images;
   if (updates.description !== undefined) dbUpdates.description = updates.description;
   if (updates.dimensions !== undefined) dbUpdates.dimensions = updates.dimensions;

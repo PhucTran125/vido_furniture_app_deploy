@@ -8,10 +8,10 @@ export const translations = {
       contact: 'Contact',
     },
     hero: {
-      badge: 'Export Quality since 2010',
+      badge: 'Export Quality since 2016',
       titleStart: 'Craftsmanship &',
       titleEnd: 'Comfort',
-      description: "Vietnam's Premier Furniture Manufacturer. Blending industrial precision with artisanal detail.",
+      description: "VIDO Furniture - Professional Ottoman & Bench Manufacturer | Export Furniture Supplier",
       explore: 'Explore Collection',
       contact: 'Contact Us',
     },
@@ -64,7 +64,7 @@ export const translations = {
       subHeader2: 'Continuous Improvement',
       subP2: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
       quote: 'We believe that every detail matters, from the initial sketch to the final shipment container.',
-      
+
       // Customer Service Section
       serviceIntroTitle: 'Our Custom Service Process',
       serviceIntroDesc: 'We are a leading furniture manufacturer based in Vietnam, dedicated to providing high-quality custom furniture solutions to importers, wholesalers, and distributors globally. Our procurement process is designed to be seamless, ensuring that you receive the products you need efficiently and on time.',
@@ -107,7 +107,7 @@ export const translations = {
       susP3Desc: 'We actively recycle scraps and non-usable materials, seeking innovative ways to repurpose products and reduce our ecological footprint.',
       susP4Title: 'Customer-Driven Improvement',
       susP4Desc: 'We value consumer insights to refine our product offerings and enhance service quality, meeting evolving market demands with eco-friendly practices.',
-      
+
       // Gallery
       imageLabel: 'Image'
     },
@@ -136,7 +136,9 @@ export const translations = {
     card: {
       material: 'Material',
       size: 'Size',
-      inquire: 'Inquire Now',
+      inquire: 'Inquire',
+      addedToWishlist: 'Added to wishlist',
+      removedFromWishlist: 'Removed from wishlist',
     },
     contact: {
       title: 'Contact Us',
@@ -147,6 +149,33 @@ export const translations = {
       hotline: 'Hotlines',
       taxCode: 'Tax Code',
       email: 'Email',
+      sectionTitle: 'GET A QUOTE FROM VIDO FURNITURE',
+      sectionSubtitle: 'We are a <strong>BSCI & FSC CERTIFIED FACTORY</strong> in Thai Binh. For wholesale inquiries, custom designs (OEM/ODM), or factory audit reports, please contact us below.',
+      whyPartner: 'WHY PARTNER WITH US?',
+      factoryDirect: 'Factory Direct:',
+      factoryDirectDesc: 'Competitive wholesale prices for importers.',
+      certifiedEthics: 'Certified Ethics:',
+      certifiedEthicsDesc: 'BSCI audited facility & FSC wood source.',
+      qualityAssurance: 'Quality Assurance:',
+      qualityAssuranceDesc: 'Strict QC for every storage ottoman & bench.',
+      directContact: 'DIRECT CONTACT',
+      emailLabel: 'EMAIL:',
+      locationLabel: 'LOCATION:',
+      location: 'THAI BINH, VIETNAM',
+      chatWhatsapp: 'CHAT ON WHATSAPP',
+      sendInquiry: 'SEND INQUIRY',
+      inquirySubtitle: 'Please include product items and quantity for a fast quote.',
+      nameLabel: 'Name',
+      firstName: 'First',
+      lastName: 'Last',
+      emailField: 'Email',
+      phoneLabel: 'Phone',
+      commentLabel: 'Comment or Message',
+      submitBtn: 'Submit',
+      sending: 'Sending...',
+      requiredField: 'This field is required.',
+      successMessage: 'Thank you! Your inquiry has been sent successfully.',
+      errorMessage: 'Something went wrong. Please try again or email us directly.',
     },
     footer: {
       description: 'Leading the way in furniture manufacturing with a commitment to quality, innovation, and reliability.',
@@ -164,10 +193,10 @@ export const translations = {
       contact: 'Liên Hệ',
     },
     hero: {
-      badge: 'Chất Lượng Xuất Khẩu Từ 2010',
+      badge: 'Chất Lượng Xuất Khẩu Từ 2016',
       titleStart: 'Tinh Hoa &',
       titleEnd: 'Tiện Nghi',
-      description: "Nhà sản xuất nội thất hàng đầu Việt Nam. Kết hợp dây chuyền công nghiệp chính xác với sự tỉ mỉ của nghệ nhân.",
+      description: "VIDO Furniture - Nhà sản xuất ghế Ottoman và ghế dài chuyên nghiệp | Nhà cung cấp xuất khẩu đồ nội thất",
       explore: 'Xem Bộ Sưu Tập',
       contact: 'Liên Hệ Ngay',
     },
@@ -220,7 +249,7 @@ export const translations = {
       subHeader2: 'Cải tiến Liên tục',
       subP2: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
       quote: 'Chúng tôi tin rằng mọi chi tiết đều quan trọng, từ bản phác thảo đầu tiên đến thùng hàng xuất xưởng cuối cùng.',
-      
+
       // Customer Service Section
       serviceIntroTitle: 'Quy Trình Dịch Vụ Của Chúng Tôi',
       serviceIntroDesc: 'Chúng tôi là nhà sản xuất nội thất hàng đầu tại Việt Nam, chuyên cung cấp các giải pháp nội thất tùy chỉnh chất lượng cao cho các nhà nhập khẩu, bán buôn và phân phối trên toàn cầu. Quy trình thu mua của chúng tôi được thiết kế liền mạch, đảm bảo bạn nhận được sản phẩm cần thiết một cách hiệu quả và đúng hạn.',
@@ -263,7 +292,7 @@ export const translations = {
       susP3Desc: 'Chúng tôi tích cực tái chế phế liệu và vật liệu không sử dụng được, tìm kiếm các giải pháp sáng tạo để tái sử dụng sản phẩm và giảm dấu chân sinh thái.',
       susP4Title: 'Cải Tiến Hướng Đến Khách Hàng',
       susP4Desc: 'Chúng tôi trân trọng ý kiến của người tiêu dùng để hoàn thiện sản phẩm và nâng cao chất lượng dịch vụ, đáp ứng nhu cầu thị trường ngày càng cao bằng các thực hành thân thiện với môi trường.',
-      
+
       // Gallery
       imageLabel: 'Hình ảnh'
     },
@@ -292,7 +321,9 @@ export const translations = {
     card: {
       material: 'Chất liệu',
       size: 'Kích thước',
-      inquire: 'Hỏi Hàng Ngay',
+      inquire: 'Hỏi Hàng',
+      addedToWishlist: 'Đã thêm vào yêu thích',
+      removedFromWishlist: 'Đã xóa khỏi yêu thích',
     },
     contact: {
       title: 'Liên Hệ Với Chúng Tôi',
@@ -303,6 +334,33 @@ export const translations = {
       hotline: 'Số Điện Thoại Liên Hệ',
       taxCode: 'Mã Số Thuế',
       email: 'Email',
+      sectionTitle: 'NHẬN BÁO GIÁ TỪ VIDO FURNITURE',
+      sectionSubtitle: 'Chúng tôi là <strong>NHÀ MÁY ĐẠT CHỨNG NHẬN BSCI & FSC</strong> tại Thái Bình. Để hỏi giá sỉ, thiết kế tùy chỉnh (OEM/ODM), hoặc báo cáo kiểm toán nhà máy, vui lòng liên hệ bên dưới.',
+      whyPartner: 'TẠI SAO NÊN HỢP TÁC VỚI CHÚNG TÔI?',
+      factoryDirect: 'Trực Tiếp Từ Nhà Máy:',
+      factoryDirectDesc: 'Giá sỉ cạnh tranh cho nhà nhập khẩu.',
+      certifiedEthics: 'Đạo Đức Được Chứng Nhận:',
+      certifiedEthicsDesc: 'Cơ sở kiểm toán BSCI & nguồn gỗ FSC.',
+      qualityAssurance: 'Đảm Bảo Chất Lượng:',
+      qualityAssuranceDesc: 'QC nghiêm ngặt cho mọi sản phẩm ghế & băng ghế.',
+      directContact: 'LIÊN HỆ TRỰC TIẾP',
+      emailLabel: 'EMAIL:',
+      locationLabel: 'ĐỊA ĐIỂM:',
+      location: 'THÁI BÌNH, VIỆT NAM',
+      chatWhatsapp: 'NHẮN TIN QUA WHATSAPP',
+      sendInquiry: 'GỬI YÊU CẦU BÁO GIÁ',
+      inquirySubtitle: 'Vui lòng ghi rõ sản phẩm và số lượng để nhận báo giá nhanh.',
+      nameLabel: 'Họ và Tên',
+      firstName: 'Tên',
+      lastName: 'Họ',
+      emailField: 'Email',
+      phoneLabel: 'Số Điện Thoại',
+      commentLabel: 'Nhận Xét hoặc Tin Nhắn',
+      submitBtn: 'Gửi',
+      sending: 'Đang gửi...',
+      requiredField: 'Trường này là bắt buộc.',
+      successMessage: 'Cảm ơn bạn! Yêu cầu của bạn đã được gửi thành công.',
+      errorMessage: 'Đã xảy ra lỗi. Vui lòng thử lại hoặc gửi email trực tiếp cho chúng tôi.',
     },
     footer: {
       description: 'Tiên phong trong sản xuất nội thất với cam kết về chất lượng, đổi mới và độ tin cậy.',

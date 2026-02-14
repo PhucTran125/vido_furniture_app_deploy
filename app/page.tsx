@@ -12,8 +12,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
-      <Highlights />
+      {/* Hero + Highlights fill exactly one viewport (minus header) */}
+      <div className="flex flex-col h-[calc(100vh-5rem)]">
+        <Hero />
+        <Highlights />
+      </div>
       <FeaturedCollection products={products} />
       <Contact />
     </>

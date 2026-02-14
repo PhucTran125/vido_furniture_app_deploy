@@ -30,7 +30,7 @@ export const Highlights: React.FC = () => {
   ];
 
   return (
-    <div className="bg-primary text-white py-8 md:py-10 border-b-4 border-accent">
+    <div className="bg-primary text-white py-8 md:py-10 border-b-4 border-accent shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
           {highlights.map((item, index) => (

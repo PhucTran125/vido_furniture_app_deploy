@@ -1,88 +1,250 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Section } from './ui/Section';
 import { COMPANY_INFO } from '@/lib/constants';
-import { MapPin, Phone, Mail, FileText } from 'lucide-react';
+import { CheckCircle, Mail, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export const Contact: React.FC = () => {
   const { t, language } = useLanguage();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => { const next = { ...prev }; delete next[name]; return next; });
+    }
+  };
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.firstName.trim()) newErrors.firstName = t.contact.requiredField;
+    if (!formData.lastName.trim()) newErrors.lastName = t.contact.requiredField;
+    if (!formData.email.trim()) newErrors.email = t.contact.requiredField;
+    if (!formData.phone.trim()) newErrors.phone = t.contact.requiredField;
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
+    setStatus('sending');
+
+    try {
+      const subject = `Inquiry from ${formData.firstName} ${formData.lastName}`;
+      const body = `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`;
+      window.location.href = `mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      setStatus('success');
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const benefits = [
+    { label: t.contact.factoryDirect, desc: t.contact.factoryDirectDesc },
+    { label: t.contact.certifiedEthics, desc: t.contact.certifiedEthicsDesc },
+    { label: t.contact.qualityAssurance, desc: t.contact.qualityAssuranceDesc },
+  ];
+
+  const companyName = language === 'vi'
+    ? 'CÔNG TY CỔ PHẦN NỘI THẤT VIDO VIỆT NAM (VIDO FURNITURE JSC)'
+    : 'VIDO VIET NAM FURNITURE JOINT STOCK COMPANY (VIDO FURNITURE JSC)';
 
   return (
-    <Section id="contact" className="bg-white !py-10 md:!py-20">
+    <Section id="contact" className="bg-background !py-10 md:!py-20">
       <div className="max-w-5xl mx-auto">
-        <div className="bg-[#f8f9fa] p-6 md:p-10 rounded-[20px] shadow-sm border border-gray-100 mx-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-gray-900 tracking-tight uppercase mb-3">
+            {t.contact.sectionTitle}
+          </h2>
+          <p
+            className="text-gray-500 text-sm md:text-base max-w-3xl mx-auto leading-relaxed uppercase tracking-wide"
+            dangerouslySetInnerHTML={{ __html: t.contact.sectionSubtitle }}
+          />
+        </div>
 
-            {/* Company Address Section */}
-            <div className="flex items-start gap-4 md:gap-5">
-              <div className="bg-[#eeeeee] p-3.5 rounded-full shrink-0 flex items-center justify-center">
-                <MapPin size={28} className="text-accent" />
+        {/* Main Container */}
+        <div className="bg-white p-6 md:p-10 rounded-[20px] shadow-md border border-gray-100 mx-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+            {/* Left Column: Why Partner + Company Name + Direct Contact */}
+            <div className="flex flex-col">
+              {/* Why Partner */}
+              <h4 className="font-heading text-lg font-bold text-gray-900 mb-6">
+                {t.contact.whyPartner}
+              </h4>
+
+              <div className="space-y-5 mb-8">
+                {benefits.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <CheckCircle size={18} className="text-accent mt-0.5 shrink-0" />
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      <span className="font-bold text-gray-900 uppercase">{item.label}</span>{' '}
+                      <span className="uppercase">{item.desc}</span>
+                    </p>
+                  </div>
+                ))}
               </div>
-              <div className="space-y-3">
-                <h4 className="font-heading font-bold text-gray-900 text-lg tracking-tight leading-none">{t.contact.address}</h4>
+
+              {/* Company Name */}
+              <p className="text-black font-bold text-base leading-snug mb-4">
+                {companyName}
+              </p>
+
+              {/* Direct Contact */}
+              <div className="border-l-4 border-accent pl-5 py-3 mb-8">
+                <h4 className="font-heading text-base font-bold text-accent uppercase tracking-wide mb-3">
+                  {t.contact.directContact}
+                </h4>
                 <div className="space-y-2">
-                  <p className="text-black font-bold text-base leading-snug">
-                    {language === 'vi' ? 'CÔNG TY CỔ PHẦN NỘI THẤT VIDO VIỆT NAM (VIDO FURNITURE JSC)' : 'VIDO VIET NAM FURNITURE JOINT STOCK COMPANY (VIDO FURNITURE JSC)'}
-                  </p>
-                  <p className="text-gray-800 font-medium text-base leading-relaxed">
-                    {t.contact.fullAddress}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Hotlines, Tax Code, Email */}
-            <div className="space-y-10">
-
-              {/* Hotlines */}
-              <div className="flex items-start gap-4 md:gap-5">
-                <div className="bg-[#eeeeee] p-3.5 rounded-full shrink-0 flex items-center justify-center">
-                  <Phone size={28} className="text-accent" />
-                </div>
-                <div className="flex-grow">
-                  <h4 className="font-heading font-bold text-gray-900 text-lg tracking-tight leading-none mb-4">{t.contact.hotline}</h4>
-                  <div className="space-y-4">
-                    {COMPANY_INFO.contacts.map((contact, idx) => (
-                      <div key={idx} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-300 pb-2 last:border-0">
-                        <span className="text-black text-base font-bold tracking-wide uppercase">
-                          {language === 'vi' ? contact.nameVi : contact.name}
-                        </span>
-                        <a href={`tel:${contact.phone}`} className="text-primary font-black text-lg md:text-xl hover:text-accent transition-colors font-mono">
+                  {COMPANY_INFO.contacts.map((contact, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <Mail size={14} className="text-gray-400 mt-1 shrink-0" />
+                      <p className="text-sm text-gray-700">
+                        <a href={`mailto:${contact.email}`} className="hover:text-accent transition-colors uppercase">
+                          {contact.email}
+                        </a>
+                        {' / '}
+                        <a href={`tel:${contact.phone.replace(/[\s()]/g, '')}`} className="hover:text-accent transition-colors">
                           {contact.phone}
                         </a>
-                      </div>
-                    ))}
+                      </p>
+                    </div>
+                  ))}
+                  <div className="flex items-start gap-2">
+                    <MapPin size={14} className="text-gray-400 mt-1 shrink-0" />
+                    <p className="text-sm text-gray-700">
+                      {t.contact.fullAddress}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Tax Code */}
-              <div className="flex items-start gap-4 md:gap-5">
-                <div className="bg-[#eeeeee] p-3.5 rounded-full shrink-0 flex items-center justify-center">
-                  <FileText size={28} className="text-accent" />
-                </div>
-                <div className="flex-grow">
-                  <h4 className="font-heading font-bold text-gray-900 text-lg tracking-tight leading-none mb-2">{t.contact.taxCode}</h4>
-                  <p className="text-gray-800 font-bold text-base md:text-lg">{COMPANY_INFO.taxCode}</p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-start gap-4 md:gap-5">
-                <div className="bg-[#eeeeee] p-3.5 rounded-full shrink-0 flex items-center justify-center">
-                  <Mail size={28} className="text-accent" />
-                </div>
-                <div className="flex-grow">
-                  <h4 className="font-heading font-bold text-gray-900 text-lg tracking-tight leading-none mb-2">{t.contact.email}</h4>
-                  <a href={`mailto:${COMPANY_INFO.email}`} className="text-accent font-bold hover:underline text-base md:text-lg break-all">
-                    {COMPANY_INFO.email}
-                  </a>
-                </div>
-              </div>
-
             </div>
+
+            {/* Right Column: Inquiry Form */}
+            <div className="bg-[#f8f9fa] rounded-[16px] border border-gray-200 p-6 md:p-8 flex flex-col">
+              <h3 className="font-heading text-lg md:text-xl font-bold text-gray-900 mb-1">
+                {t.contact.sendInquiry}
+              </h3>
+              <p className="text-gray-400 text-xs uppercase tracking-wide mb-6">
+                {t.contact.inquirySubtitle}
+              </p>
+
+              <form onSubmit={handleSubmit} className="flex flex-col flex-grow">
+                {/* Name Fields */}
+                <div className="mb-5">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    {t.contact.nameLabel} <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className={`w-full border rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-1 ${errors.firstName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-accent focus:ring-accent'}`}
+                      />
+                      <span className={`text-xs mt-1 block ${errors.firstName ? 'text-red-500' : 'text-gray-400'}`}>
+                        {errors.firstName || t.contact.firstName}
+                      </span>
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className={`w-full border rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-1 ${errors.lastName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-accent focus:ring-accent'}`}
+                      />
+                      <span className={`text-xs mt-1 block ${errors.lastName ? 'text-red-500' : 'text-gray-400'}`}>
+                        {errors.lastName || t.contact.lastName}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Email Field */}
+                <div className="mb-5">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    {t.contact.emailField} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full border rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-1 ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-accent focus:ring-accent'}`}
+                  />
+                  {errors.email && <span className="text-xs text-red-500 mt-1 block">{errors.email}</span>}
+                </div>
+
+                {/* Phone Field */}
+                <div className="mb-5">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    {t.contact.phoneLabel} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`w-full border rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-1 ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-accent focus:ring-accent'}`}
+                  />
+                  {errors.phone && <span className="text-xs text-red-500 mt-1 block">{errors.phone}</span>}
+                </div>
+
+                {/* Comment / Message */}
+                <div className="mb-5 flex-grow">
+                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                    {t.contact.commentLabel}
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows={5}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent resize-y"
+                  />
+                </div>
+
+                {/* Status Messages */}
+                {status === 'success' && (
+                  <p className="text-green-600 text-sm mb-4">{t.contact.successMessage}</p>
+                )}
+                {status === 'error' && (
+                  <p className="text-red-600 text-sm mb-4">{t.contact.errorMessage}</p>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="self-start bg-primary hover:bg-primary/90 text-white font-bold text-sm uppercase tracking-wider py-3 px-10 rounded-lg transition-colors disabled:opacity-60"
+                >
+                  {status === 'sending' ? t.contact.sending : t.contact.submitBtn}
+                </button>
+              </form>
+            </div>
+
           </div>
         </div>
       </div>

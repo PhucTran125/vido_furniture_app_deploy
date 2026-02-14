@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Package, LogOut, Home } from 'lucide-react';
+import { Package, Tag, Settings, LogOut, Home } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -31,6 +31,8 @@ export default function AdminLayout({
 
   const handleLogout = () => {
     document.cookie = 'admin_auth=; path=/; max-age=0';
+    document.cookie = 'admin_id=; path=/; max-age=0';
+    document.cookie = 'admin_username=; path=/; max-age=0';
     setIsAuthenticated(false);
     router.push('/admin/login');
   };
@@ -66,10 +68,30 @@ export default function AdminLayout({
                   <Package size={20} />
                   Products
                 </Link>
+                <Link
+                  href="/admin/categories"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${pathname?.startsWith('/admin/categories')
+                    ? 'bg-accent text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                >
+                  <Tag size={20} />
+                  Categories
+                </Link>
               </nav>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin/settings"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${pathname?.startsWith('/admin/settings')
+                  ? 'bg-accent text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+              >
+                <Settings size={20} />
+                <span className="hidden sm:inline">Settings</span>
+              </Link>
               <Link
                 href="/"
                 target="_blank"

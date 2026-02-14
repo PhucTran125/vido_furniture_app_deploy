@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, LogIn } from 'lucide-react';
+import { Lock, LogIn, User } from 'lucide-react';
 
 export default function AdminLoginPage() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,16 +16,28 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
 
-    // Simulate a slight delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
 
-    // Simple password check (in production, use proper auth)
-    if (password === 'admin123') {
-      // Set auth cookie
-      document.cookie = 'admin_auth=true; path=/; max-age=86400'; // 24 hours
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Invalid credentials. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Store admin info and set auth cookie
+      document.cookie = `admin_auth=true; path=/; max-age=86400`;
+      document.cookie = `admin_id=${data.admin.id}; path=/; max-age=86400`;
+      document.cookie = `admin_username=${data.admin.username}; path=/; max-age=86400`;
       router.push('/admin/products');
-    } else {
-      setError('Invalid password. Please try again.');
+    } catch {
+      setError('Something went wrong. Please try again.');
       setLoading(false);
     }
   };
@@ -45,7 +58,26 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
+              Username
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setError(''); }}
+                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                placeholder="Enter username"
+                required
+                disabled={loading}
+              />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            </div>
+          </div>
+
           <div>
             <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
               Password
@@ -55,13 +87,9 @@ export default function AdminLoginPage() {
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError('');
-                }}
-                className={`w-full px-4 py-3 pl-11 border ${error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-accent'
-                  } rounded-lg focus:ring-2 focus:border-transparent transition-all`}
-                placeholder="Enter admin password"
+                onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                className={`w-full px-4 py-3 pl-11 border ${error ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-accent'} rounded-lg focus:ring-2 focus:border-transparent transition-all`}
+                placeholder="Enter password"
                 required
                 disabled={loading}
               />
@@ -69,7 +97,7 @@ export default function AdminLoginPage() {
             </div>
             {error && (
               <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                <span className="font-medium">⚠️</span> {error}
+                <span className="font-medium">&#9888;&#65039;</span> {error}
               </p>
             )}
           </div>
@@ -91,16 +119,6 @@ export default function AdminLoginPage() {
               </>
             )}
           </button>
-
-          {/* Development Note */}
-          <div className="text-center pt-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 mb-2">Development Mode</p>
-            <div className="bg-gray-50 px-3 py-2 rounded-lg inline-block">
-              <p className="text-sm text-gray-600">
-                Password: <code className="bg-white px-2 py-1 rounded font-mono text-accent font-semibold">admin123</code>
-              </p>
-            </div>
-          </div>
         </form>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Open_Sans, Montserrat } from 'next/font/google';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { WishlistProvider } from '@/contexts/WishlistContext';
 import { ConditionalLayout } from '@/components/ConditionalLayout';
 import './globals.css';
 
@@ -43,7 +44,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-sans bg-background text-primary">
         <LanguageProvider>
-          <ConditionalLayout>{children}</ConditionalLayout>
+          <WishlistProvider>
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </WishlistProvider>
         </LanguageProvider>
       </body>
     </html>

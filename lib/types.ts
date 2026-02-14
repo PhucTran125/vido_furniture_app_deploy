@@ -20,6 +20,7 @@ export interface Product {
   id: string;
   itemNo: string;
   category: string;
+  categoryId?: number;
 
   // Localized content
   name: LocalizedContent;

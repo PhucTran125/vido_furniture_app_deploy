@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { Phone } from 'lucide-react';
+import { COMPANY_INFO } from '@/lib/constants';
 
 export const FloatingContactButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const salesContact = COMPANY_INFO.contacts[0];
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button after scrolling down 300px
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
@@ -20,32 +21,31 @@ export const FloatingContactButton: React.FC = () => {
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <button
-      onClick={scrollToContact}
+    <a
+      href={`tel:${salesContact.phone.replace(/[\s()]/g, '')}`}
       className={`
-        fixed bottom-6 right-6 z-50 
-        bg-accent text-white p-4 rounded-full shadow-lg 
-        hover:bg-primary hover:shadow-2xl 
-        transition-all duration-500 transform 
+        fixed bottom-6 right-6 z-50
+        flex items-center justify-end
+        bg-accent hover:bg-primary
+        text-white
+        rounded-full shadow-lg hover:shadow-2xl
+        h-14 pr-[17px]
+        w-14 hover:w-56
+        transition-all duration-300 ease-in-out
+        overflow-hidden
         group
-        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}
+        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}
       `}
-      aria-label="Contact Us"
-      title="Contact Us"
+      aria-label={`Call ${salesContact.phone}`}
     >
-      {/* Animated ripple ring on hover */}
-      <div className="absolute inset-0 rounded-full border-2 border-accent opacity-0 group-hover:animate-ping"></div>
+      {/* Phone number - appears to the left of the icon */}
+      <span className="whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-[180px] opacity-0 group-hover:opacity-100 transition-all duration-300 delay-75 font-bold text-sm tracking-wide mr-3">
+        {salesContact.phone}
+      </span>
 
-      {/* Icon */}
-      <Phone size={24} className="relative z-10 fill-current" />
-    </button>
+      {/* Phone icon - stays fixed at right edge */}
+      <Phone size={22} className="shrink-0 fill-current" />
+    </a>
   );
 };
