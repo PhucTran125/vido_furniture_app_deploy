@@ -2,39 +2,51 @@ import nodemailer from 'nodemailer';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-let transporterPromise: Promise<nodemailer.Transporter>;
-
-if (isDev) {
-  // Use Ethereal fake SMTP for development/testing
-  transporterPromise = nodemailer.createTestAccount().then((testAccount) => {
-    console.log('Ethereal test account created:', testAccount.user);
-    console.log('View emails at: https://ethereal.email/login');
-    console.log('  User:', testAccount.user);
-    console.log('  Pass:', testAccount.pass);
-    return nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
+function createGmailTransporter() {
+  return nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      type: 'OAuth2',
+      user: process.env.GMAIL_SENDER_EMAIL,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+    },
   });
-} else {
-  // Use Gmail OAuth2 in production
-  transporterPromise = Promise.resolve(
-    nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: process.env.GMAIL_SENDER_EMAIL,
-        clientId: process.env.GMAIL_CLIENT_ID,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-      },
-    })
-  );
+}
+
+async function createEtherealTransporter() {
+  const testAccount = await nodemailer.createTestAccount();
+  console.log('Ethereal test account created:', testAccount.user);
+  console.log('View emails at: https://ethereal.email/login');
+  console.log('  User:', testAccount.user);
+  console.log('  Pass:', testAccount.pass);
+  return nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+}
+
+// Cache Ethereal transporter across requests (avoid creating new accounts each time)
+let etherealTransporter: nodemailer.Transporter | null = null;
+
+async function getTransporter(): Promise<nodemailer.Transporter> {
+  if (isDev) {
+    if (!etherealTransporter) {
+      etherealTransporter = await createEtherealTransporter();
+    }
+    return etherealTransporter;
+  }
+  // Create a fresh transporter each request in production
+  // to avoid stale OAuth2 tokens in serverless environments
+  return createGmailTransporter();
 }
 
 interface InquiryData {
@@ -100,7 +112,7 @@ export async function sendCustomerConfirmation(data: InquiryData) {
     </div>
   `;
 
-  const transporter = await transporterPromise;
+  const transporter = await getTransporter();
   const info = await transporter.sendMail({
     from: `"VIDO Furniture" <${process.env.GMAIL_SENDER_EMAIL || 'noreply@vido.test'}>`,
     to: data.email,
@@ -154,7 +166,7 @@ export async function sendCompanyNotification(data: InquiryData) {
     </div>
   `;
 
-  const transporter = await transporterPromise;
+  const transporter = await getTransporter();
   const info = await transporter.sendMail({
     from: `"VIDO Website" <${process.env.GMAIL_SENDER_EMAIL || 'noreply@vido.test'}>`,
     to: 'sales01@vidointernational.com',
