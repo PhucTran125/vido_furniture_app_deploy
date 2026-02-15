@@ -46,9 +46,12 @@ export const Contact: React.FC = () => {
     setStatus('sending');
 
     try {
-      const subject = `Inquiry from ${formData.firstName} ${formData.lastName}`;
-      const body = `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`;
-      window.location.href = `mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('Failed to send');
       setStatus('success');
       setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
     } catch {
