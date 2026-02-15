@@ -1,19 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendCustomerConfirmation, sendCompanyNotification } from '@/lib/email';
 
-// GET /api/contact — diagnostic endpoint to test email config
-export async function GET() {
-  const envCheck = {
-    GMAIL_SENDER_EMAIL: !!process.env.GMAIL_SENDER_EMAIL,
-    GMAIL_CLIENT_ID: !!process.env.GMAIL_CLIENT_ID,
-    GMAIL_CLIENT_SECRET: !!process.env.GMAIL_CLIENT_SECRET,
-    GMAIL_REFRESH_TOKEN: !!process.env.GMAIL_REFRESH_TOKEN,
-    NODE_ENV: process.env.NODE_ENV,
-  };
-
-  return NextResponse.json({ envCheck });
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
