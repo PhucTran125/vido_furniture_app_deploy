@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { updateCategory, deleteCategory, getCategoryProductCount } from '@/lib/db/categories';
+import { requireAdminAuth } from '@/lib/auth/session';
 
 // PUT /api/admin/categories/[id] — update category name
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const body = await request.json();
     const { name } = body;
@@ -25,6 +29,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 // DELETE /api/admin/categories/[id] — delete category (only if no products)
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const categoryId = Number(id);
 

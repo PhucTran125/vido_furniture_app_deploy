@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createProduct } from '@/lib/db/products';
 import { revalidatePath } from 'next/cache';
+import { requireAdminAuth } from '@/lib/auth/session';
 
 export async function POST(request: Request) {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const data = await request.json();
 
     const product = await createProduct(data);

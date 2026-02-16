@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendCustomerConfirmation, sendCompanyNotification } from '@/lib/email';
+import { isValidEmail, isValidPhone, sanitizeString } from '@/lib/validation';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,19 +11,27 @@ export async function POST(request: NextRequest) {
     const errors: Record<string, string> = {};
     if (!firstName?.trim()) errors.firstName = 'First name is required';
     if (!lastName?.trim()) errors.lastName = 'Last name is required';
-    if (!email?.trim()) errors.email = 'Email is required';
-    if (!phone?.trim()) errors.phone = 'Phone is required';
+    if (!email?.trim()) {
+      errors.email = 'Email is required';
+    } else if (!isValidEmail(email.trim())) {
+      errors.email = 'Please enter a valid email address';
+    }
+    if (!phone?.trim()) {
+      errors.phone = 'Phone is required';
+    } else if (!isValidPhone(phone.trim())) {
+      errors.phone = 'Please enter a valid phone number';
+    }
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json({ success: false, errors }, { status: 400 });
     }
 
     const data = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      message: message?.trim() || '',
+      firstName: sanitizeString(firstName, 100),
+      lastName: sanitizeString(lastName, 100),
+      email: sanitizeString(email, 254),
+      phone: sanitizeString(phone, 20),
+      message: sanitizeString(message || '', 2000),
     };
 
     // Send emails and log any failures

@@ -13,15 +13,25 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [adminUsername, setAdminUsername] = useState('');
 
-  // Check authentication on mount
+  // Check authentication via server session endpoint
   useEffect(() => {
-    const checkAuth = () => {
-      const authCookie = document.cookie.includes('admin_auth=true');
-      setIsAuthenticated(authCookie);
+    if (pathname === '/admin/login') return;
 
-      // Redirect to login if not authenticated and not on login page
-      if (!authCookie && pathname !== '/admin/login') {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/admin/auth/session');
+        if (res.ok) {
+          const data = await res.json();
+          setIsAuthenticated(true);
+          setAdminUsername(data.admin?.username || '');
+        } else {
+          setIsAuthenticated(false);
+          router.push('/admin/login');
+        }
+      } catch {
+        setIsAuthenticated(false);
         router.push('/admin/login');
       }
     };
@@ -29,10 +39,12 @@ export default function AdminLayout({
     checkAuth();
   }, [pathname, router]);
 
-  const handleLogout = () => {
-    document.cookie = 'admin_auth=; path=/; max-age=0';
-    document.cookie = 'admin_id=; path=/; max-age=0';
-    document.cookie = 'admin_username=; path=/; max-age=0';
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/auth/logout', { method: 'POST' });
+    } catch {
+      // Clear even if the API call fails
+    }
     setIsAuthenticated(false);
     router.push('/admin/login');
   };

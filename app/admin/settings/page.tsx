@@ -11,15 +11,20 @@ export default function SettingsPage() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
-  const [adminId, setAdminId] = useState('');
 
   useEffect(() => {
-    const getCookie = (name: string) => {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return match ? match[2] : '';
+    const fetchSession = async () => {
+      try {
+        const res = await fetch('/api/admin/auth/session');
+        if (res.ok) {
+          const data = await res.json();
+          setAdminUsername(data.admin?.username || 'admin');
+        }
+      } catch {
+        // Ignore — layout handles redirect
+      }
     };
-    setAdminUsername(getCookie('admin_username') || 'admin');
-    setAdminId(getCookie('admin_id'));
+    fetchSession();
   }, []);
 
   const handleChangePassword = async (e: React.FormEvent) => {
@@ -43,7 +48,6 @@ export default function SettingsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          adminId: Number(adminId),
           currentPassword,
           newPassword,
         }),

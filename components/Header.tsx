@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Globe, ChevronDown, Check, Heart, Trash2, Send } from 'lucide-react';
 import { Button } from './ui/Button';
+import { ContactModal } from './ContactModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { Product, getMainImageUrl } from '@/lib/types';
@@ -20,12 +21,15 @@ export const Header: React.FC = () => {
   const [isDesktopLangOpen, setIsDesktopLangOpen] = useState(false);
   const [isMobileLangOpen, setIsMobileLangOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactModalMessage, setContactModalMessage] = useState('');
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
   const [loadingWishlist, setLoadingWishlist] = useState(false);
 
   const desktopLangRef = useRef<HTMLDivElement>(null);
   const mobileLangRef = useRef<HTMLDivElement>(null);
-  const wishlistPanelRef = useRef<HTMLDivElement>(null);
+  const desktopWishlistRef = useRef<HTMLDivElement>(null);
+  const mobileWishlistRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -85,7 +89,10 @@ export const Header: React.FC = () => {
       if (mobileLangRef.current && !mobileLangRef.current.contains(event.target as Node)) {
         setIsMobileLangOpen(false);
       }
-      if (wishlistPanelRef.current && !wishlistPanelRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const insideDesktop = desktopWishlistRef.current?.contains(target);
+      const insideMobile = mobileWishlistRef.current?.contains(target);
+      if (!insideDesktop && !insideMobile) {
         setIsWishlistOpen(false);
       }
     }
@@ -131,12 +138,22 @@ export const Header: React.FC = () => {
     </>
   );
 
+  const handleContactClick = () => {
+    setIsMenuOpen(false);
+    if (pathname === '/') {
+      scrollToSection('contact');
+    } else {
+      setContactModalMessage('');
+      setIsContactModalOpen(true);
+    }
+  };
+
   const handleInquireAll = () => {
+    const productNames = wishlistProducts.map((p) => `- ${p.name[language]}`).join('\n');
+    const message = `I would like to inquire about the following items:\n${productNames}`;
     setIsWishlistOpen(false);
-    setTimeout(() => {
-      const el = document.getElementById('contact');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    setContactModalMessage(message);
+    setIsContactModalOpen(true);
   };
 
   return (
@@ -181,7 +198,7 @@ export const Header: React.FC = () => {
             ))}
 
             {/* Wishlist Icon */}
-            <div className="relative" ref={wishlistPanelRef}>
+            <div className="relative" ref={desktopWishlistRef}>
               <button
                 onClick={() => setIsWishlistOpen(!isWishlistOpen)}
                 className="relative p-2 text-gray-600 hover:text-accent transition-colors focus:outline-none"
@@ -302,7 +319,7 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            <button onClick={() => scrollToSection('contact')}>
+            <button onClick={handleContactClick}>
               <Button variant="primary">
                 {t.nav.contact}
               </Button>
@@ -356,7 +373,7 @@ export const Header: React.FC = () => {
       {/* Mobile Wishlist Panel (full-width below header) */}
       {isWishlistOpen && (
         <div
-          ref={wishlistPanelRef}
+          ref={mobileWishlistRef}
           className="md:hidden absolute left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-50"
         >
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
@@ -462,7 +479,7 @@ export const Header: React.FC = () => {
               )
             ))}
             <div className="px-3 py-3">
-              <button onClick={() => scrollToSection('contact')} className="w-full">
+              <button onClick={handleContactClick} className="w-full">
                 <Button fullWidth>
                   {t.nav.contact}
                 </Button>
@@ -471,6 +488,11 @@ export const Header: React.FC = () => {
           </div>
         </div>
       )}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        defaultMessage={contactModalMessage}
+      />
     </header>
   );
 };

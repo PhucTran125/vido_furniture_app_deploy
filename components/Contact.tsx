@@ -30,8 +30,16 @@ export const Contact: React.FC = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.firstName.trim()) newErrors.firstName = t.contact.requiredField;
     if (!formData.lastName.trim()) newErrors.lastName = t.contact.requiredField;
-    if (!formData.email.trim()) newErrors.email = t.contact.requiredField;
-    if (!formData.phone.trim()) newErrors.phone = t.contact.requiredField;
+    if (!formData.email.trim()) {
+      newErrors.email = t.contact.requiredField;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = t.contact.invalidEmail;
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = t.contact.requiredField;
+    } else if (!/^[+]?[\d\s\-().]{7,20}$/.test(formData.phone.trim())) {
+      newErrors.phone = t.contact.invalidPhone;
+    }
     return newErrors;
   };
 

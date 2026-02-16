@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getCategories, createCategory } from '@/lib/db/categories';
+import { requireAdminAuth } from '@/lib/auth/session';
 
 // GET /api/admin/categories — list all categories
 export async function GET() {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const categories = await getCategories();
     return NextResponse.json(categories);
   } catch (error: any) {
@@ -14,6 +18,9 @@ export async function GET() {
 // POST /api/admin/categories — create a new category
 export async function POST(request: Request) {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const body = await request.json();
     const { name } = body;
 

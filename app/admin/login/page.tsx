@@ -31,10 +31,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Store admin info and set auth cookie
-      document.cookie = `admin_auth=true; path=/; max-age=86400`;
-      document.cookie = `admin_id=${data.admin.id}; path=/; max-age=86400`;
-      document.cookie = `admin_username=${data.admin.username}; path=/; max-age=86400`;
+      // Session cookie is set server-side (HttpOnly) — just redirect
       router.push('/admin/products');
     } catch {
       setError('Something went wrong. Please try again.');

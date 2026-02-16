@@ -2,6 +2,18 @@ import nodemailer from 'nodemailer';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+/**
+ * Escape HTML special characters to prevent XSS in email templates
+ */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function createGmailTransporter() {
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -58,6 +70,14 @@ interface InquiryData {
 }
 
 export async function sendCustomerConfirmation(data: InquiryData) {
+  const safe = {
+    firstName: escapeHtml(data.firstName),
+    lastName: escapeHtml(data.lastName),
+    email: escapeHtml(data.email),
+    phone: escapeHtml(data.phone),
+    message: escapeHtml(data.message),
+  };
+
   const html = `
     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
       <!-- Header -->
@@ -70,7 +90,7 @@ export async function sendCustomerConfirmation(data: InquiryData) {
       <div style="padding: 40px;">
         <h2 style="color: #1a1a2e; font-size: 20px; margin: 0 0 20px; font-weight: 600;">Thank You for Your Inquiry</h2>
         <p style="color: #444; line-height: 1.8; font-size: 14px; margin: 0 0 16px;">
-          Dear ${data.firstName} ${data.lastName},
+          Dear ${safe.firstName} ${safe.lastName},
         </p>
         <p style="color: #444; line-height: 1.8; font-size: 14px; margin: 0 0 24px;">
           Thank you for your interest in VIDO Furniture. Our sales team has received your inquiry and will respond within <strong>24 business hours</strong>.
@@ -80,10 +100,10 @@ export async function sendCustomerConfirmation(data: InquiryData) {
         <div style="background: #f9f8f6; border-left: 4px solid #c8a97e; padding: 20px; margin: 0 0 24px;">
           <h3 style="color: #1a1a2e; font-size: 14px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.5px;">Your Inquiry Summary</h3>
           <table style="width: 100%; font-size: 14px; color: #555;">
-            <tr><td style="padding: 4px 0; font-weight: 600; width: 80px;">Name:</td><td style="padding: 4px 0;">${data.firstName} ${data.lastName}</td></tr>
-            <tr><td style="padding: 4px 0; font-weight: 600;">Email:</td><td style="padding: 4px 0;">${data.email}</td></tr>
-            <tr><td style="padding: 4px 0; font-weight: 600;">Phone:</td><td style="padding: 4px 0;">${data.phone}</td></tr>
-            ${data.message ? `<tr><td style="padding: 4px 0; font-weight: 600; vertical-align: top;">Message:</td><td style="padding: 4px 0;">${data.message}</td></tr>` : ''}
+            <tr><td style="padding: 4px 0; font-weight: 600; width: 80px;">Name:</td><td style="padding: 4px 0;">${safe.firstName} ${safe.lastName}</td></tr>
+            <tr><td style="padding: 4px 0; font-weight: 600;">Email:</td><td style="padding: 4px 0;">${safe.email}</td></tr>
+            <tr><td style="padding: 4px 0; font-weight: 600;">Phone:</td><td style="padding: 4px 0;">${safe.phone}</td></tr>
+            ${safe.message ? `<tr><td style="padding: 4px 0; font-weight: 600; vertical-align: top;">Message:</td><td style="padding: 4px 0;">${safe.message}</td></tr>` : ''}
           </table>
         </div>
 
@@ -126,6 +146,14 @@ export async function sendCustomerConfirmation(data: InquiryData) {
 }
 
 export async function sendCompanyNotification(data: InquiryData) {
+  const safe = {
+    firstName: escapeHtml(data.firstName),
+    lastName: escapeHtml(data.lastName),
+    email: escapeHtml(data.email),
+    phone: escapeHtml(data.phone),
+    message: escapeHtml(data.message),
+  };
+
   const timestamp = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Ho_Chi_Minh' });
   const html = `
     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
@@ -140,20 +168,20 @@ export async function sendCompanyNotification(data: InquiryData) {
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
           <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 12px 0; color: #888; font-weight: 600; width: 100px; vertical-align: top;">Name</td>
-            <td style="padding: 12px 0; color: #222; font-weight: 600; font-size: 16px;">${data.firstName} ${data.lastName}</td>
+            <td style="padding: 12px 0; color: #222; font-weight: 600; font-size: 16px;">${safe.firstName} ${safe.lastName}</td>
           </tr>
           <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 12px 0; color: #888; font-weight: 600; vertical-align: top;">Email</td>
-            <td style="padding: 12px 0;"><a href="mailto:${data.email}" style="color: #c8a97e; text-decoration: none; font-size: 14px;">${data.email}</a></td>
+            <td style="padding: 12px 0;"><a href="mailto:${safe.email}" style="color: #c8a97e; text-decoration: none; font-size: 14px;">${safe.email}</a></td>
           </tr>
           <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 12px 0; color: #888; font-weight: 600; vertical-align: top;">Phone</td>
-            <td style="padding: 12px 0;"><a href="tel:${data.phone}" style="color: #c8a97e; text-decoration: none; font-size: 14px;">${data.phone}</a></td>
+            <td style="padding: 12px 0;"><a href="tel:${safe.phone}" style="color: #c8a97e; text-decoration: none; font-size: 14px;">${safe.phone}</a></td>
           </tr>
-          ${data.message ? `
+          ${safe.message ? `
           <tr>
             <td style="padding: 12px 0; color: #888; font-weight: 600; vertical-align: top;">Message</td>
-            <td style="padding: 12px 0; color: #333; line-height: 1.6; white-space: pre-wrap;">${data.message}</td>
+            <td style="padding: 12px 0; color: #333; line-height: 1.6; white-space: pre-wrap;">${safe.message}</td>
           </tr>` : ''}
         </table>
 
@@ -170,7 +198,7 @@ export async function sendCompanyNotification(data: InquiryData) {
   const info = await transporter.sendMail({
     from: `"VIDO Website" <${process.env.GMAIL_SENDER_EMAIL || 'noreply@vido.test'}>`,
     to: 'sales01@vidointernational.com',
-    subject: `New Inquiry from ${data.firstName} ${data.lastName}`,
+    subject: `New Inquiry from ${safe.firstName} ${safe.lastName}`,
     html,
   });
 

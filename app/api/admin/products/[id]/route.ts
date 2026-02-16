@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { updateProduct } from '@/lib/db/products';
 import { revalidatePath } from 'next/cache';
+import { requireAdminAuth } from '@/lib/auth/session';
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = await requireAdminAuth();
+    if (auth instanceof NextResponse) return auth;
+
     const { id } = await params;
     const data = await request.json();
 
