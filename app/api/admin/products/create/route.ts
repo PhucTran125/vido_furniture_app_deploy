@@ -3,6 +3,16 @@ import { createProduct } from '@/lib/db/products';
 import { revalidatePath } from 'next/cache';
 import { requireAdminAuth } from '@/lib/auth/session';
 
+// Helper to generate slug matching the route format
+function generateSlug(name: string, itemNo: string): string {
+  const nameSlug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  const itemSlug = itemNo.toLowerCase();
+  return `${nameSlug}-${itemSlug}`;
+}
+
 export async function POST(request: Request) {
   try {
     const auth = await requireAdminAuth();
@@ -12,10 +22,11 @@ export async function POST(request: Request) {
 
     const product = await createProduct(data);
 
-    // Revalidate all relevant pages
+    // Revalidate all relevant pages using the correct slug-based path
+    const slug = generateSlug(product.name.en, product.itemNo);
     revalidatePath('/');
     revalidatePath('/products');
-    revalidatePath(`/products/${product.id}`);
+    revalidatePath(`/products/${slug}`);
 
     return NextResponse.json(product);
   } catch (error: any) {

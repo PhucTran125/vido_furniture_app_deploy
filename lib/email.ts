@@ -197,7 +197,7 @@ export async function sendCompanyNotification(data: InquiryData) {
   const transporter = await getTransporter();
   const info = await transporter.sendMail({
     from: `"VIDO Website" <${process.env.GMAIL_SENDER_EMAIL || 'noreply@vido.test'}>`,
-    to: 'sales01@vidointernational.com',
+    to: 'sales02@vidointernational.com',
     subject: `New Inquiry from ${safe.firstName} ${safe.lastName}`,
     html,
   });

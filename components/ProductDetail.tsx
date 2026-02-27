@@ -239,10 +239,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
           {/* Left: Product Image Gallery */}
-          <div className="space-y-4">
+          <div className="space-y-4 sticky top-40 self-start">
             {/* Main Large Image */}
             <div
-              className="bg-[#F8F8F8] border border-gray-100 rounded-sm overflow-hidden sticky top-40 group relative aspect-square cursor-zoom-in"
+              className="bg-[#F8F8F8] border border-gray-100 rounded-sm overflow-hidden group relative aspect-square cursor-zoom-in"
               onClick={() => setIsModalOpen(true)}
             >
               <img
