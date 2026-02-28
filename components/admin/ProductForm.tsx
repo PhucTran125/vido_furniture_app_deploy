@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { ArrowLeft, Save, Loader2, Plus, X, Upload, Star, Eye, EyeOff, Trash2 } from 'lucide-react';
-import heic2any from 'heic2any';
 import { uploadProductImage } from '@/lib/supabase/upload-images';
 
 interface ProductFormProps {
@@ -98,6 +97,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
 
   // --- Image helpers ---
   const convertHeicToJpeg = async (file: File): Promise<File> => {
+    const heic2any = (await import('heic2any')).default;
     const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 }) as Blob;
     const name = file.name.replace(/\.heic$/i, '.jpg');
     return new File([blob], name, { type: 'image/jpeg' });
