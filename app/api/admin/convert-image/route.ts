@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
-import decode from 'heic-decode';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const decode = require('heic-decode');
 
 export async function POST(request: NextRequest) {
   try {
