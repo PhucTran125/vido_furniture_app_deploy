@@ -21,6 +21,13 @@ export const metadata: Metadata = {
   title: 'VIDO Furniture | Premier Manufacturing in Vietnam',
   description: 'Export-quality furniture manufacturer specializing in compact furniture, creative seating, storage benches, and home decor for European, US, and Japanese markets.',
   keywords: 'furniture manufacturer Vietnam, export furniture, B2B furniture wholesale, compact furniture, creative seating',
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'VIDO Furniture - Vietnam Premier Manufacturer',
     description: 'Export-quality furniture for international markets',

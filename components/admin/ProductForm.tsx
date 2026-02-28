@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { ArrowLeft, Save, Loader2, Plus, X, Upload, Star, Eye, EyeOff, Trash2 } from 'lucide-react';
+import heic2any from 'heic2any';
 import { uploadProductImage } from '@/lib/supabase/upload-images';
 
 interface ProductFormProps {
@@ -96,6 +97,12 @@ export function ProductForm({ product, mode }: ProductFormProps) {
   };
 
   // --- Image helpers ---
+  const convertHeicToJpeg = async (file: File): Promise<File> => {
+    const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 }) as Blob;
+    const name = file.name.replace(/\.heic$/i, '.jpg');
+    return new File([blob], name, { type: 'image/jpeg' });
+  };
+
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
   };
@@ -108,8 +115,13 @@ export function ProductForm({ product, mode }: ProductFormProps) {
 
     setUploading(true);
     try {
+      let fileToUpload = selectedFile;
+      if (/\.heic$/i.test(selectedFile.name)) {
+        fileToUpload = await convertHeicToJpeg(selectedFile);
+      }
+
       const imageType = formData.images.length === 0 ? 'main' : `view-${formData.images.length + 1}`;
-      const url = await uploadProductImage(selectedFile, formData.itemNo, imageType);
+      const url = await uploadProductImage(fileToUpload, formData.itemNo, imageType);
 
       const newImage = {
         url,
@@ -517,7 +529,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
 
           <div className="aspect-square">
             <label className="w-full h-full border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-colors">
-              <input type="file" accept="image/*"
+              <input type="file" accept="image/*,.heic,.heif"
                 onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileSelect(file); }}
                 className="hidden" disabled={!formData.itemNo} />
               <Plus size={32} className="text-gray-400 mb-2" />
