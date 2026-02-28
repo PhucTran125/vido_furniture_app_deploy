@@ -167,7 +167,7 @@ export const Header: React.FC = () => {
               className="flex items-center gap-3 group focus:outline-none"
             >
               <img
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="VIDO Furniture"
                 className="h-20 w-auto object-contain"
               />

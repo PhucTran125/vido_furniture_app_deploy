@@ -34,7 +34,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
     fetch('/api/admin/categories')
       .then(res => res.json())
       .then(data => setCategories(data))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const [formData, setFormData] = useState({
@@ -437,7 +437,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
         <legend className="text-lg font-semibold text-gray-900 px-2">Pricing (USD)</legend>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
           <div>
-            <label htmlFor="priceFob" className="block text-sm font-medium text-gray-700 mb-2">FOB Fuzhou</label>
+            <label htmlFor="priceFob" className="block text-sm font-medium text-gray-700 mb-2">FOB Hải Phòng</label>
             <input type="number" id="priceFob" step="0.01" value={formData.priceFobFuzhou}
               onChange={(e) => setFormData({ ...formData, priceFobFuzhou: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
