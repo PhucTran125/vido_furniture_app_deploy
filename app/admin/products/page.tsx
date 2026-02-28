@@ -12,6 +12,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return products;
@@ -48,6 +49,34 @@ export default function AdminProductsPage() {
       console.error('Error loading products:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleProductStatus = async (product: Product) => {
+    if (togglingId) return;
+    setTogglingId(product.id);
+    const newStatus = !product.isActive;
+
+    // Optimistic update
+    setProducts(prev =>
+      prev.map(p => p.id === product.id ? { ...p, isActive: newStatus } : p)
+    );
+
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to update');
+    } catch {
+      // Revert on error
+      setProducts(prev =>
+        prev.map(p => p.id === product.id ? { ...p, isActive: !newStatus } : p)
+      );
+      alert('Failed to update product status');
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -131,23 +160,27 @@ export default function AdminProductsPage() {
                   {product.category}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {product.isActive ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                      </svg>
-                      Visible
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleProductStatus(product)}
+                      disabled={togglingId === product.id}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        product.isActive ? 'bg-blue-600' : 'bg-gray-300'
+                      } ${togglingId === product.id ? 'opacity-70' : 'cursor-pointer'}`}
+                    >
+                      {togglingId === product.id ? (
+                        <Loader2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin text-white" size={14} />
+                      ) : null}
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          product.isActive ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                    <span className={`text-xs font-medium ${product.isActive ? 'text-green-700' : 'text-gray-500'}`}>
+                      {product.isActive ? 'Visible' : 'Hidden'}
                     </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
-                        <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
-                      </svg>
-                      Hidden
-                    </span>
-                  )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <Link
