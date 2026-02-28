@@ -96,10 +96,19 @@ export function ProductForm({ product, mode }: ProductFormProps) {
   };
 
   // --- Image helpers ---
+  const isHeic = (file: File): boolean => {
+    const ext = file.name.toLowerCase();
+    return ext.endsWith('.heic') || ext.endsWith('.heif') ||
+      file.type === 'image/heic' || file.type === 'image/heif';
+  };
+
   const convertHeicToJpeg = async (file: File): Promise<File> => {
-    const heic2any = (await import('heic2any')).default;
-    const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 }) as Blob;
-    const name = file.name.replace(/\.heic$/i, '.jpg');
+    const body = new FormData();
+    body.append('file', file);
+    const res = await fetch('/api/admin/convert-image', { method: 'POST', body });
+    if (!res.ok) throw new Error('Server conversion failed');
+    const blob = await res.blob();
+    const name = file.name.replace(/\.(heic|heif)$/i, '.jpg');
     return new File([blob], name, { type: 'image/jpeg' });
   };
 
@@ -116,7 +125,7 @@ export function ProductForm({ product, mode }: ProductFormProps) {
     setUploading(true);
     try {
       let fileToUpload = selectedFile;
-      if (/\.heic$/i.test(selectedFile.name)) {
+      if (isHeic(selectedFile)) {
         fileToUpload = await convertHeicToJpeg(selectedFile);
       }
 
