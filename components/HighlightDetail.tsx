@@ -216,7 +216,17 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
   ];
 
 
-  const factoryImages = Array.from({ length: 9 }, (_, i) => `/Picture/${25 + i}.jpg`);
+  const factoryImages = [
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/quy-trinh-may-vido-vietnam.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/z7629649280104_fb532d40b4ba744316f94b9fa5ca9c76.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/z7629649282904_446918059847170580a0844b683df543.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/khong-gia-nha-xuong-tai-vietnam.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/export-standard-5-ply-carton-packaging-vido-vietnam.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/export-standard-cutting-wood-vido-vietnam.jpg',
+    '/Picture/31.jpg',
+    '/Picture/32.jpg',
+    '/Picture/33.jpg',
+  ];
 
   const containerImages = [
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-container-loading-at-vido-furniture-factory-in-vietnam,-optimizing-space-for-40ft-hc-containers..jpg',
@@ -224,7 +234,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/export-standard-5-ply-carton-packaging-vido-vietnam.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/maximum-cbm-loading-efficiency-for-export.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-furniture-loading-staff-vido-factory-vido-vietam.jpg',
-    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg',
+    // 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg',
   ];
 
   return (
@@ -412,141 +422,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                   <div className="w-12 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-
-                  {/* FSC Certificate Card */}
-                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
-                    <div className="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-3">
-                      <div className="p-2.5 bg-green-600 rounded-lg text-white">
-                        <TreePine size={22} />
-                      </div>
-                      <div>
-                        <h3 className="font-heading font-bold text-primary text-sm">
-                          {t.about.certFscTitle}
-                        </h3>
-                        <p className="text-xs text-gray-500">{t.about.certFscIssuer}</p>
-                      </div>
-                    </div>
-                    <div
-                      className="relative cursor-pointer group/preview mx-4 mt-4 rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
-                      onClick={() => openCertLightbox(
-                        '/certifications/fsc-certificate-preview-1.png',
-                        t.about.certFscTitle,
-                        '/certifications/fsc-certificate-summertree.pdf'
-                      )}
-                    >
-                      <div className="relative aspect-[4/3] bg-gray-50">
-                        <Image
-                          src="/certifications/fsc-certificate-preview-1.png"
-                          alt={t.about.certFscTitle}
-                          fill
-                          className="object-contain object-top"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/40 transition-all flex items-center justify-center">
-                        <div className="opacity-0 group-hover/preview:opacity-100 transition-all transform scale-90 group-hover/preview:scale-100 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                          <Eye size={24} className="text-primary" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="px-4 py-4 space-y-2">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        {t.about.certStatus}
-                      </span>
-                      <p className="text-xs text-gray-600">{t.about.certFscScope}</p>
-                      <div className="flex items-center gap-2 pt-1">
-                        <button
-                          onClick={() => openCertLightbox(
-                            '/certifications/fsc-certificate-preview-1.png',
-                            t.about.certFscTitle,
-                            '/certifications/fsc-certificate-summertree.pdf'
-                          )}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-                        >
-                          <Eye size={14} />
-                          {t.about.certView}
-                        </button>
-                        <a
-                          href="/certifications/fsc-certificate-summertree.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                          <Download size={14} />
-                          {t.about.certDownload}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SGS Certificate Card */}
-                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
-                    <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
-                      <div className="p-2.5 bg-orange-500 rounded-lg text-white">
-                        <FlameKindling size={22} />
-                      </div>
-                      <div>
-                        <h3 className="font-heading font-bold text-primary text-sm">
-                          {t.about.certSgsTitle}
-                        </h3>
-                        <p className="text-xs text-gray-500">{t.about.certSgsIssuer}</p>
-                      </div>
-                    </div>
-                    <div
-                      className="relative cursor-pointer group/preview mx-4 mt-4 rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
-                      onClick={() => openCertLightbox(
-                        '/certifications/sgs-report-preview-1.png',
-                        t.about.certSgsTitle,
-                        '/certifications/sgs-test-report-tb117.pdf'
-                      )}
-                    >
-                      <div className="relative aspect-[4/3] bg-gray-50">
-                        <Image
-                          src="/certifications/sgs-report-preview-1.png"
-                          alt={t.about.certSgsTitle}
-                          fill
-                          className="object-contain object-top"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/40 transition-all flex items-center justify-center">
-                        <div className="opacity-0 group-hover/preview:opacity-100 transition-all transform scale-90 group-hover/preview:scale-100 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                          <Eye size={24} className="text-primary" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="px-4 py-4 space-y-2">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        {t.about.certStatus}
-                      </span>
-                      <p className="text-xs text-gray-600">{t.about.certSgsScope}</p>
-                      <div className="flex items-center gap-2 pt-1">
-                        <button
-                          onClick={() => openCertLightbox(
-                            '/certifications/sgs-report-preview-1.png',
-                            t.about.certSgsTitle,
-                            '/certifications/sgs-test-report-tb117.pdf'
-                          )}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-                        >
-                          <Eye size={14} />
-                          {t.about.certView}
-                        </button>
-                        <a
-                          href="/certifications/sgs-test-report-tb117.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                          <Download size={14} />
-                          {t.about.certDownload}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+                <div className="max-w-md mx-auto">
 
                   {/* BSCI Certificate Card */}
                   <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
@@ -955,14 +831,13 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                     { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/export-standard-5-ply-carton-packaging-vido-vietnam.jpg', alt: 'Export standard 5-ply carton packaging' },
                     { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/maximum-cbm-loading-efficiency-for-export.jpg', alt: 'Maximum CBM loading efficiency' },
                     { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-furniture-loading-staff-vido-factory-vido-vietam.jpg', alt: 'Professional loading staff at VIDO factory' },
-                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg', alt: 'Secure container sealing for shipping' },
+                    // { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg', alt: 'Secure container sealing for shipping' },
                   ].map((img, index) => (
                     <div
                       key={index}
                       onClick={() => setContainerLightboxIndex(index)}
-                      className={`group cursor-pointer relative overflow-hidden rounded-lg bg-gray-100 shadow-sm ${
-                        index === 0 || index === 5 ? 'md:col-span-2 aspect-[2/1]' : 'aspect-square'
-                      }`}
+                      className={`group cursor-pointer relative overflow-hidden rounded-lg bg-gray-100 shadow-sm ${index === 0 || index === 5 ? 'md:col-span-2 aspect-[2/1]' : 'aspect-square'
+                        }`}
                     >
                       <Image
                         src={img.src}
@@ -1092,9 +967,8 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
           </div>
 
           <div
-            className={`relative bg-white rounded-xl shadow-2xl overflow-auto transition-all duration-300 ${
-              certZoom ? 'max-w-[95vw] max-h-[90vh] w-auto' : 'max-w-3xl max-h-[85vh] w-full'
-            }`}
+            className={`relative bg-white rounded-xl shadow-2xl overflow-auto transition-all duration-300 ${certZoom ? 'max-w-[95vw] max-h-[90vh] w-auto' : 'max-w-3xl max-h-[85vh] w-full'
+              }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className={`relative ${certZoom ? 'w-[1200px]' : 'w-full'}`}>

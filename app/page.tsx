@@ -1,6 +1,7 @@
 import { Hero } from '@/components/Hero';
 import { Highlights } from '@/components/Highlights';
 import { FeaturedCollection } from '@/components/FeaturedCollection';
+import { Achievements } from '@/components/Achievements';
 import { Contact } from '@/components/Contact';
 import { getProducts } from '@/lib/db/products';
 
@@ -18,6 +19,7 @@ export default async function HomePage() {
         <Highlights />
       </div>
       <FeaturedCollection products={products} />
+      <Achievements />
       <Contact />
     </>
   );
