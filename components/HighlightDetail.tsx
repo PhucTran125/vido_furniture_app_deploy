@@ -35,7 +35,8 @@ import {
   Eye,
   X,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
 import { PageType } from '@/lib/types';
@@ -53,6 +54,43 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
   const [certLightbox, setCertLightbox] = useState<{ src: string; alt: string; pdf: string } | null>(null);
   const [certZoom, setCertZoom] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [materialLightbox, setMaterialLightbox] = useState<{ images: string[]; index: number; title: string } | null>(null);
+  const [containerLightboxIndex, setContainerLightboxIndex] = useState<number | null>(null);
+
+  const openMaterialLightbox = useCallback((images: string[], index: number, title: string) => {
+    setMaterialLightbox({ images, index, title });
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const closeMaterialLightbox = useCallback(() => {
+    setMaterialLightbox(null);
+    document.body.style.overflow = '';
+  }, []);
+
+  // Material collections - images to be provided later
+  const materialCollections = [
+    {
+      key: 'fabric',
+      name: t.highlights.materialFabricName,
+      desc: t.highlights.materialFabricDesc,
+      coverImage: '/materials/fabric-cover.jpg',
+      images: ['/materials/fabric-1.jpg', '/materials/fabric-2.jpg', '/materials/fabric-3.jpg'],
+    },
+    {
+      key: 'wood',
+      name: t.highlights.materialWoodName,
+      desc: t.highlights.materialWoodDesc,
+      coverImage: '/materials/wood-cover.jpg',
+      images: ['/materials/wood-1.jpg', '/materials/wood-2.jpg', '/materials/wood-3.jpg'],
+    },
+    {
+      key: 'foam',
+      name: t.highlights.materialFoamName,
+      desc: t.highlights.materialFoamDesc,
+      coverImage: '/materials/foam-cover.jpg',
+      images: ['/materials/foam-1.jpg', '/materials/foam-2.jpg', '/materials/foam-3.jpg'],
+    },
+  ];
 
   const openCertLightbox = useCallback((src: string, alt: string, pdf: string) => {
     setCertLightbox({ src, alt, pdf });
@@ -79,6 +117,19 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
       return () => window.removeEventListener('keydown', handleEsc);
     }
   }, [certLightbox, closeCertLightbox]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (!materialLightbox) return;
+      if (e.key === 'Escape') closeMaterialLightbox();
+      if (e.key === 'ArrowRight') setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null);
+      if (e.key === 'ArrowLeft') setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null);
+    };
+    if (materialLightbox) {
+      window.addEventListener('keydown', handleKey);
+      return () => window.removeEventListener('keydown', handleKey);
+    }
+  }, [materialLightbox, closeMaterialLightbox]);
 
   const getContent = () => {
     switch (type) {
@@ -152,6 +203,15 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
 
 
   const factoryImages = Array.from({ length: 9 }, (_, i) => `/Picture/${25 + i}.jpg`);
+
+  const containerImages = [
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-container-loading-at-vido-furniture-factory-in-vietnam,-optimizing-space-for-40ft-hc-containers..jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-container-loading-at-vido-furniture-protection-packaging-sea-freight.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/export-standard-5-ply-carton-packaging-vido-vietnam.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/maximum-cbm-loading-efficiency-for-export.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-furniture-loading-staff-vido-factory-vido-vietam.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg',
+  ];
 
   return (
     <div className="bg-white">
@@ -321,7 +381,231 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                 </div>
               </div>
 
-              {/* Section 3: Sustainability */}
+              {/* Section 3: Certifications & Social Compliance */}
+              <div className="bg-gray-50 -mx-4 md:-mx-10 px-6 md:px-12 py-16 rounded-[2rem]">
+                <div className="text-center mb-10">
+                  <div className="inline-flex items-center gap-2 mb-3">
+                    <ShieldCheck size={20} className="text-accent" />
+                    <span className="text-accent font-bold text-[10px] uppercase tracking-[0.3em]">
+                      {t.about.certsTitle}
+                    </span>
+                  </div>
+                  <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary">
+                    {t.highlights.factoryCertsTitle}
+                  </h2>
+                  <p className="text-gray-500 text-sm md:text-base mt-3 max-w-3xl mx-auto leading-relaxed">
+                    {t.highlights.factoryCertsDesc}
+                  </p>
+                  <div className="w-12 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+
+                  {/* FSC Certificate Card */}
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
+                    <div className="bg-green-50 px-6 py-4 border-b border-green-100 flex items-center gap-3">
+                      <div className="p-2.5 bg-green-600 rounded-lg text-white">
+                        <TreePine size={22} />
+                      </div>
+                      <div>
+                        <h3 className="font-heading font-bold text-primary text-sm">
+                          {t.about.certFscTitle}
+                        </h3>
+                        <p className="text-xs text-gray-500">{t.about.certFscIssuer}</p>
+                      </div>
+                    </div>
+                    <div
+                      className="relative cursor-pointer group/preview mx-4 mt-4 rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
+                      onClick={() => openCertLightbox(
+                        '/certifications/fsc-certificate-preview-1.png',
+                        t.about.certFscTitle,
+                        '/certifications/fsc-certificate-summertree.pdf'
+                      )}
+                    >
+                      <div className="relative aspect-[4/3] bg-gray-50">
+                        <Image
+                          src="/certifications/fsc-certificate-preview-1.png"
+                          alt={t.about.certFscTitle}
+                          fill
+                          className="object-contain object-top"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/40 transition-all flex items-center justify-center">
+                        <div className="opacity-0 group-hover/preview:opacity-100 transition-all transform scale-90 group-hover/preview:scale-100 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                          <Eye size={24} className="text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-4 py-4 space-y-2">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        {t.about.certStatus}
+                      </span>
+                      <p className="text-xs text-gray-600">{t.about.certFscScope}</p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          onClick={() => openCertLightbox(
+                            '/certifications/fsc-certificate-preview-1.png',
+                            t.about.certFscTitle,
+                            '/certifications/fsc-certificate-summertree.pdf'
+                          )}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          <Eye size={14} />
+                          {t.about.certView}
+                        </button>
+                        <a
+                          href="/certifications/fsc-certificate-summertree.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <Download size={14} />
+                          {t.about.certDownload}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SGS Certificate Card */}
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
+                    <div className="bg-orange-50 px-6 py-4 border-b border-orange-100 flex items-center gap-3">
+                      <div className="p-2.5 bg-orange-500 rounded-lg text-white">
+                        <FlameKindling size={22} />
+                      </div>
+                      <div>
+                        <h3 className="font-heading font-bold text-primary text-sm">
+                          {t.about.certSgsTitle}
+                        </h3>
+                        <p className="text-xs text-gray-500">{t.about.certSgsIssuer}</p>
+                      </div>
+                    </div>
+                    <div
+                      className="relative cursor-pointer group/preview mx-4 mt-4 rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
+                      onClick={() => openCertLightbox(
+                        '/certifications/sgs-report-preview-1.png',
+                        t.about.certSgsTitle,
+                        '/certifications/sgs-test-report-tb117.pdf'
+                      )}
+                    >
+                      <div className="relative aspect-[4/3] bg-gray-50">
+                        <Image
+                          src="/certifications/sgs-report-preview-1.png"
+                          alt={t.about.certSgsTitle}
+                          fill
+                          className="object-contain object-top"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/40 transition-all flex items-center justify-center">
+                        <div className="opacity-0 group-hover/preview:opacity-100 transition-all transform scale-90 group-hover/preview:scale-100 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                          <Eye size={24} className="text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-4 py-4 space-y-2">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        {t.about.certStatus}
+                      </span>
+                      <p className="text-xs text-gray-600">{t.about.certSgsScope}</p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          onClick={() => openCertLightbox(
+                            '/certifications/sgs-report-preview-1.png',
+                            t.about.certSgsTitle,
+                            '/certifications/sgs-test-report-tb117.pdf'
+                          )}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          <Eye size={14} />
+                          {t.about.certView}
+                        </button>
+                        <a
+                          href="/certifications/sgs-test-report-tb117.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <Download size={14} />
+                          {t.about.certDownload}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BSCI Certificate Card */}
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all overflow-hidden group">
+                    <div className="bg-blue-50 px-6 py-4 border-b border-blue-100 flex items-center gap-3">
+                      <div className="p-2.5 bg-blue-600 rounded-lg text-white">
+                        <ShieldCheck size={22} />
+                      </div>
+                      <div>
+                        <h3 className="font-heading font-bold text-primary text-sm">
+                          {t.about.certBsciTitle}
+                        </h3>
+                        <p className="text-xs text-gray-500">{t.about.certBsciIssuer}</p>
+                      </div>
+                    </div>
+                    <div
+                      className="relative cursor-pointer group/preview mx-4 mt-4 rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all"
+                      onClick={() => openCertLightbox(
+                        '/certifications/bsci-report-preview-1.png',
+                        t.about.certBsciTitle,
+                        '/certifications/bsci-audit-report.pdf'
+                      )}
+                    >
+                      <div className="relative aspect-[4/3] bg-gray-50">
+                        <Image
+                          src="/certifications/bsci-report-preview-1.png"
+                          alt={t.about.certBsciTitle}
+                          fill
+                          className="object-contain object-top"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/40 transition-all flex items-center justify-center">
+                        <div className="opacity-0 group-hover/preview:opacity-100 transition-all transform scale-90 group-hover/preview:scale-100 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                          <Eye size={24} className="text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="px-4 py-4 space-y-2">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        {t.about.certStatus}
+                      </span>
+                      <p className="text-xs text-gray-600">{t.about.certBsciScope}</p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <button
+                          onClick={() => openCertLightbox(
+                            '/certifications/bsci-report-preview-1.png',
+                            t.about.certBsciTitle,
+                            '/certifications/bsci-audit-report.pdf'
+                          )}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          <Eye size={14} />
+                          {t.about.certView}
+                        </button>
+                        <a
+                          href="/certifications/bsci-audit-report.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <Download size={14} />
+                          {t.about.certDownload}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Section 4: Sustainability */}
               <div className="bg-[#F9F9F9] -mx-4 md:-mx-10 px-5 md:px-8 py-10 rounded-2xl">
                 <div className="max-w-none mx-auto">
                   <div className="text-center mb-8">
@@ -386,22 +670,72 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                 "{t.highlights.quote}"
               </blockquote>
 
-              {/* Certifications & Compliance Section */}
+              {/* Premium & Compliant Materials Section */}
               <div className="bg-gray-50 -mx-4 md:-mx-10 px-6 md:px-12 py-16 rounded-[2rem]">
                 <div className="text-center mb-10">
                   <div className="inline-flex items-center gap-2 mb-3">
                     <ShieldCheck size={20} className="text-accent" />
                     <span className="text-accent font-bold text-[10px] uppercase tracking-[0.3em]">
-                      {t.about.certsTitle}
+                      {t.highlights.materialsTitle}
                     </span>
                   </div>
                   <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary">
-                    {t.about.certsTitle}
+                    {t.highlights.materialsTitle}
                   </h2>
                   <p className="text-gray-500 text-sm md:text-base mt-3 max-w-2xl mx-auto">
-                    {t.about.certsSubtitle}
+                    {t.highlights.materialsSubtitle}
                   </p>
                   <div className="w-12 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                {/* Material Collections Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                  {materialCollections.map((material) => (
+                    <div
+                      key={material.key}
+                      className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500"
+                      onClick={() => openMaterialLightbox(material.images, 0, material.name)}
+                    >
+                      {/* Cover Image */}
+                      <img
+                        src={material.coverImage}
+                        alt={material.name}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://placehold.co/800x600/EAEAEA/999999?text=${material.name}`;
+                        }}
+                      />
+
+                      {/* Default overlay - material name + arrow */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:opacity-0 transition-opacity duration-500 flex flex-col justify-end p-6">
+                        <h3 className="font-heading font-bold text-white text-xl md:text-2xl mb-2">{material.name}</h3>
+                        <div className="w-10 h-10 border-2 border-white/80 rounded-md flex items-center justify-center">
+                          <ArrowRight size={18} className="text-white" />
+                        </div>
+                      </div>
+
+                      {/* Hover overlay - description revealed */}
+                      <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-center items-center p-6 text-center">
+                        <h3 className="font-heading font-bold text-white text-xl mb-3">{material.name}</h3>
+                        <p className="text-white/85 text-sm leading-relaxed mb-4">{material.desc}</p>
+                        <span className="inline-flex items-center gap-2 text-accent text-sm font-semibold">
+                          {t.highlights.materialViewGallery}
+                          <ArrowRight size={16} />
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Certifications Sub-section */}
+                <div className="text-center mb-8">
+                  <h3 className="font-heading font-bold text-xl md:text-2xl text-primary">
+                    {t.about.certsTitle}
+                  </h3>
+                  <p className="text-gray-500 text-sm mt-2 max-w-2xl mx-auto">
+                    {t.about.certsSubtitle}
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
@@ -564,18 +898,138 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
 
                 </div>
               </div>
+
+              {/* Container Loading Optimization Section */}
+              <div className="mt-16">
+                <div className="text-center mb-10">
+                  <div className="inline-flex items-center gap-2 mb-3">
+                    <ShieldCheck size={20} className="text-accent" />
+                    <span className="text-accent font-bold text-[10px] uppercase tracking-[0.3em]">
+                      {t.highlights.containerTitle}
+                    </span>
+                  </div>
+                  <h2 className="font-heading font-bold text-2xl md:text-3xl text-primary">
+                    {t.highlights.containerTitle}
+                  </h2>
+                  <p className="text-gray-500 text-sm md:text-base mt-3 max-w-2xl mx-auto">
+                    {t.highlights.containerDesc}
+                  </p>
+                  <div className="w-12 h-1 bg-accent mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                {/* Key Points */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                  {[
+                    { title: t.highlights.containerPlanning, desc: t.highlights.containerPlanningDesc },
+                    { title: t.highlights.containerPackaging, desc: t.highlights.containerPackagingDesc },
+                    { title: t.highlights.containerEfficiency, desc: t.highlights.containerEfficiencyDesc },
+                  ].map((point, idx) => (
+                    <div key={idx} className="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:border-accent/30 hover:shadow-lg transition-all">
+                      <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+                        <span className="text-accent font-bold text-lg">{idx + 1}</span>
+                      </div>
+                      <h4 className="font-bold text-primary mb-2">{point.title}</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">{point.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Image Gallery - Masonry-style layout */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-container-loading-at-vido-furniture-factory-in-vietnam,-optimizing-space-for-40ft-hc-containers..jpg', alt: 'Container loading at VIDO factory' },
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-container-loading-at-vido-furniture-protection-packaging-sea-freight.jpg', alt: 'Protection packaging for sea freight' },
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/export-standard-5-ply-carton-packaging-vido-vietnam.jpg', alt: 'Export standard 5-ply carton packaging' },
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/maximum-cbm-loading-efficiency-for-export.jpg', alt: 'Maximum CBM loading efficiency' },
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/professional-furniture-loading-staff-vido-factory-vido-vietam.jpg', alt: 'Professional loading staff at VIDO factory' },
+                    { src: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/export-quality/secure-container-sealing-for-international-shipping.jpg', alt: 'Secure container sealing for shipping' },
+                  ].map((img, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setContainerLightboxIndex(index)}
+                      className={`group cursor-pointer relative overflow-hidden rounded-lg bg-gray-100 shadow-sm ${
+                        index === 0 || index === 5 ? 'md:col-span-2 aspect-[2/1]' : 'aspect-square'
+                      }`}
+                    >
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <Maximize2 className="text-white drop-shadow-md transform scale-90 group-hover:scale-100 transition-transform" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Container Loading Lightbox */}
+              <ImageModal
+                isOpen={containerLightboxIndex !== null}
+                imageUrl={containerLightboxIndex !== null ? containerImages[containerLightboxIndex] : ''}
+                altText="Container Loading"
+                onClose={() => setContainerLightboxIndex(null)}
+                showNavigation={true}
+                enableZoom={false}
+                onNext={() => setContainerLightboxIndex(prev => prev === null ? null : (prev + 1) % containerImages.length)}
+                onPrev={() => setContainerLightboxIndex(prev => prev === null ? null : (prev - 1 + containerImages.length) % containerImages.length)}
+              />
             </div>
           )}
 
           {/* Navigation Footer */}
-          <div className="mt-12 md:mt-16 pt-8 border-t border-gray-100 flex justify-center md:justify-start">
-            <button
-              onClick={() => router.push('/')}
-              className="group w-full md:w-auto flex items-center justify-center gap-2 border border-primary px-8 py-3.5 md:py-2.5 rounded-md text-accent font-bold hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 touch-manipulation"
-            >
-              <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
-              {t.highlights.back}
-            </button>
+          <div className="mt-12 md:mt-16 pt-8 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 sm:justify-between">
+              {/* Back to Overview */}
+              <button
+                onClick={() => router.push('/')}
+                className="group w-full sm:w-auto flex items-center justify-center gap-2 border border-primary px-6 py-3 rounded-md text-accent font-bold hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 touch-manipulation shrink-0"
+              >
+                <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+                {t.highlights.back}
+              </button>
+
+              {/* Explore Other Highlights */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <span className="text-xs text-gray-400 font-semibold uppercase tracking-widest whitespace-nowrap hidden sm:block">
+                  {t.highlights.exploreMore}
+                </span>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  {type !== 'export-quality' && (
+                    <button
+                      onClick={() => router.push('/highlights/export-quality')}
+                      className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                    >
+                      <Award size={15} className="shrink-0" />
+                      <span className="truncate">{t.highlights.goToQuality}</span>
+                      <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                    </button>
+                  )}
+                  {type !== 'customer-service' && (
+                    <button
+                      onClick={() => router.push('/highlights/customer-service')}
+                      className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                    >
+                      <Headset size={15} className="shrink-0" />
+                      <span className="truncate">{t.highlights.goToService}</span>
+                      <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                    </button>
+                  )}
+                  {type !== 'factory' && (
+                    <button
+                      onClick={() => router.push('/highlights/factory')}
+                      className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                    >
+                      <Factory size={15} className="shrink-0" />
+                      <span className="truncate">{t.highlights.goToFactory}</span>
+                      <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Section>
@@ -653,6 +1107,20 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Material Gallery Lightbox */}
+      {materialLightbox && (
+        <ImageModal
+          isOpen={true}
+          imageUrl={materialLightbox.images[materialLightbox.index]}
+          altText={`${materialLightbox.title} ${materialLightbox.index + 1}`}
+          onClose={closeMaterialLightbox}
+          showNavigation={materialLightbox.images.length > 1}
+          enableZoom={false}
+          onNext={() => setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null)}
+          onPrev={() => setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null)}
+        />
       )}
 
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
