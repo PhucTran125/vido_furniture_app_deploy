@@ -67,28 +67,42 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
     document.body.style.overflow = '';
   }, []);
 
-  // Material collections - images to be provided later
   const materialCollections = [
     {
       key: 'fabric',
       name: t.highlights.materialFabricName,
       desc: t.highlights.materialFabricDesc,
-      coverImage: '/materials/fabric-cover.jpg',
-      images: ['/materials/fabric-1.jpg', '/materials/fabric-2.jpg', '/materials/fabric-3.jpg'],
+      coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-velvet-fabric-vido-furniture.webp.jpg',
+      images: [
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-velvet-fabric-vido-furniture.webp.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-boucle-fabric-vido-furniture.webp.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-canvas-fabric-vido-furniture.webp.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-chenille-fabric-vido-furniture.webp.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-corduroy-fabric-vido-furniture.webp.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-linen-fabric-vido-furniture.webp.jpg',
+      ],
     },
     {
       key: 'wood',
       name: t.highlights.materialWoodName,
       desc: t.highlights.materialWoodDesc,
-      coverImage: '/materials/wood-cover.jpg',
-      images: ['/materials/wood-1.jpg', '/materials/wood-2.jpg', '/materials/wood-3.jpg'],
+      coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/sustainable-natural-wood-fsc-certified-vido-vietnam-furniture.jpg',
+      images: [
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/sustainable-natural-wood-fsc-certified-vido-vietnam-furniture.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/carb-p2-compliant-mdf-board-vido-furniture.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/high-durability-plywood-core-furniture-material.jpg',
+      ],
     },
     {
       key: 'foam',
       name: t.highlights.materialFoamName,
       desc: t.highlights.materialFoamDesc,
-      coverImage: '/materials/foam-cover.jpg',
-      images: ['/materials/foam-1.jpg', '/materials/foam-2.jpg', '/materials/foam-3.jpg'],
+      coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619706794311_8b05f54b2b24e19ee0e5a65d77e87279.jpg',
+      images: [
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619706794311_8b05f54b2b24e19ee0e5a65d77e87279.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619718467917_d4bce6bc4c7f6816051c3e2178cff975.jpg',
+        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619743642329_eaaacd3f904c65440622e1cbd8dd87fb.jpg',
+      ],
     },
   ];
 
@@ -363,15 +377,14 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                       onClick={() => setLightboxIndex(index)}
                       className="group cursor-pointer relative aspect-square overflow-hidden rounded-lg bg-gray-100 shadow-sm"
                     >
-                      <img
+                      <Image
                         src={img}
                         alt={`${t.highlights.imageLabel} ${index + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                        className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
                         loading="lazy"
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `https://placehold.co/800x800/EAEAEA/999999?text=Image+${index + 25}`;
-                        }}
+                        quality={75}
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Maximize2 className="text-white drop-shadow-md transform scale-90 group-hover:scale-100 transition-transform" />
@@ -697,14 +710,14 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                       onClick={() => openMaterialLightbox(material.images, 0, material.name)}
                     >
                       {/* Cover Image */}
-                      <img
+                      <Image
                         src={material.coverImage}
                         alt={material.name}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = `https://placehold.co/800x600/EAEAEA/999999?text=${material.name}`;
-                        }}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                        loading="lazy"
+                        quality={75}
                       />
 
                       {/* Default overlay - material name + arrow */}
@@ -951,11 +964,14 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                         index === 0 || index === 5 ? 'md:col-span-2 aspect-[2/1]' : 'aspect-square'
                       }`}
                     >
-                      <img
+                      <Image
                         src={img.src}
                         alt={img.alt}
+                        fill
+                        sizes={index === 0 || index === 5 ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 50vw, 33vw'}
+                        className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
                         loading="lazy"
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                        quality={75}
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <Maximize2 className="text-white drop-shadow-md transform scale-90 group-hover:scale-100 transition-transform" />
