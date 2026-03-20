@@ -103,27 +103,27 @@ export const AboutUs: React.FC = () => {
             <div className="flex gap-2 w-full sm:w-auto">
               <button
                 onClick={() => router.push('/highlights/export-quality')}
-                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 border border-accent px-4 py-2.5 rounded-md text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
               >
                 <Award size={15} className="shrink-0" />
                 <span className="truncate">{t.highlights.goToQuality}</span>
-                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                <ArrowRight size={13} className="shrink-0 transition-transform group-hover:translate-x-0.5" />
               </button>
               <button
                 onClick={() => router.push('/highlights/factory')}
-                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 border border-accent px-4 py-2.5 rounded-md text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
               >
                 <Factory size={15} className="shrink-0" />
                 <span className="truncate">{t.highlights.goToFactory}</span>
-                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                <ArrowRight size={13} className="shrink-0 transition-transform group-hover:translate-x-0.5" />
               </button>
               <button
                 onClick={() => router.push('/highlights/customer-service')}
-                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-accent hover:bg-accent/90 border border-accent px-4 py-2.5 rounded-md text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
               >
                 <Headset size={15} className="shrink-0" />
                 <span className="truncate">{t.highlights.goToService}</span>
-                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+                <ArrowRight size={13} className="shrink-0 transition-transform group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
