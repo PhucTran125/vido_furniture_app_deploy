@@ -80,6 +80,7 @@ export async function createCategory(name: string): Promise<Category> {
 
 /**
  * Update a category name (Admin only)
+ * Also updates the denormalized `category` string on all linked products
  */
 export async function updateCategory(id: number, name: string): Promise<Category> {
   const { data, error } = await supabaseAdmin
@@ -92,6 +93,16 @@ export async function updateCategory(id: number, name: string): Promise<Category
   if (error) {
     console.error('Error updating category:', error);
     throw new Error(`Failed to update category: ${error.message}`);
+  }
+
+  // Sync the denormalized category name on all linked products
+  const { error: syncError } = await supabaseAdmin
+    .from('products')
+    .update({ category: name })
+    .eq('category_id', id);
+
+  if (syncError) {
+    console.error('Error syncing category name to products:', syncError);
   }
 
   return data;

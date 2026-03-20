@@ -144,7 +144,21 @@ export const translations = {
       susP4Desc: 'We value consumer insights to refine our product offerings and enhance service quality, meeting evolving market demands with eco-friendly practices.',
 
       // Gallery
-      imageLabel: 'Image'
+      imageLabel: 'Image',
+
+      // Material Catalog Names
+      fabricVelvet: 'Velvet',
+      fabricBoucle: 'Boucle',
+      fabricCanvas: 'Canvas',
+      fabricChenille: 'Chenille',
+      fabricCorduroy: 'Corduroy',
+      fabricLinen: 'Linen',
+      woodNatural: 'Natural',
+      woodMdf: 'MDF',
+      woodPlywood: 'Plywood',
+      foam1: 'K25 Fire-Retardant High/Medium Density',
+      foam2: 'K24 High/Medium Density',
+      foam3: 'K25 vs K24 Foam Comparison',
     },
     blog: {
       badge: 'Latest News',
@@ -388,7 +402,21 @@ export const translations = {
       susP4Desc: 'Chúng tôi trân trọng ý kiến của người tiêu dùng để hoàn thiện sản phẩm và nâng cao chất lượng dịch vụ, đáp ứng nhu cầu thị trường ngày càng cao bằng các thực hành thân thiện với môi trường.',
 
       // Gallery
-      imageLabel: 'Hình ảnh'
+      imageLabel: 'Hình ảnh',
+
+      // Material Catalog Names
+      fabricVelvet: 'Vải Nhung',
+      fabricBoucle: 'Vải Bouclé',
+      fabricCanvas: 'Vải Canvas',
+      fabricChenille: 'Vải Chenille',
+      fabricCorduroy: 'Vải Nhung Kẻ',
+      fabricLinen: 'Vải Lanh',
+      woodNatural: 'Gỗ Tự Nhiên',
+      woodMdf: 'Gỗ MDF',
+      woodPlywood: 'Gỗ Ván Ép',
+      foam1: 'K25 chống cháy mật độ cao/Trung bình',
+      foam2: 'K24 mật độ cao/Trung bình)',
+      foam3: 'So sánh mút K25 và K24',
     },
     blog: {
       badge: 'Tin Tức Mới Nhất',

@@ -3,10 +3,12 @@
 import React, { useEffect } from 'react';
 import { Section } from './ui/Section';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe, Target, Heart } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Globe, Target, Heart, Award, Factory, Headset, ArrowRight } from 'lucide-react';
 
 export const AboutUs: React.FC = () => {
   const { t } = useLanguage();
+  const router = useRouter();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -89,6 +91,41 @@ export const AboutUs: React.FC = () => {
               </p>
             </div>
 
+          </div>
+        </div>
+
+        {/* Explore Navigation */}
+        <div className="mt-12 pt-8 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:justify-center">
+            <span className="text-xs text-gray-400 font-semibold uppercase tracking-widest whitespace-nowrap">
+              {t.highlights.exploreMore}
+            </span>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => router.push('/highlights/export-quality')}
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+              >
+                <Award size={15} className="shrink-0" />
+                <span className="truncate">{t.highlights.goToQuality}</span>
+                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+              </button>
+              <button
+                onClick={() => router.push('/highlights/factory')}
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+              >
+                <Factory size={15} className="shrink-0" />
+                <span className="truncate">{t.highlights.goToFactory}</span>
+                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+              </button>
+              <button
+                onClick={() => router.push('/highlights/customer-service')}
+                className="group flex-1 sm:flex-none flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary border border-gray-200 hover:border-primary px-4 py-2.5 rounded-md text-primary hover:text-white text-sm font-semibold transition-all shadow-sm active:scale-95 touch-manipulation"
+              >
+                <Headset size={15} className="shrink-0" />
+                <span className="truncate">{t.highlights.goToService}</span>
+                <ArrowRight size={13} className="shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1 group-hover:ml-0" />
+              </button>
+            </div>
           </div>
         </div>
       </Section>

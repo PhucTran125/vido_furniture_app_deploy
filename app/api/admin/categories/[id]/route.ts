@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { updateCategory, deleteCategory, getCategoryProductCount } from '@/lib/db/categories';
 import { requireAdminAuth } from '@/lib/auth/session';
+import { revalidatePath } from 'next/cache';
 
 // PUT /api/admin/categories/[id] — update category name
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -17,6 +18,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const category = await updateCategory(Number(id), name.trim());
+    revalidatePath('/');
+    revalidatePath('/products');
     return NextResponse.json(category);
   } catch (error: any) {
     if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
@@ -45,6 +48,8 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     }
 
     await deleteCategory(categoryId);
+    revalidatePath('/');
+    revalidatePath('/products');
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

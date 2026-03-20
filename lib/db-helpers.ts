@@ -70,6 +70,7 @@ function mapDbProductToProduct(dbProduct: any): Product {
     id: dbProduct.id,
     itemNo: dbProduct.item_no,
     category: dbProduct.category,
+    categoryId: dbProduct.category_id,
     name: dbProduct.name,
     description: dbProduct.description,
     material: dbProduct.material,

@@ -54,16 +54,18 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
   const [certLightbox, setCertLightbox] = useState<{ src: string; alt: string; pdf: string } | null>(null);
   const [certZoom, setCertZoom] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [materialLightbox, setMaterialLightbox] = useState<{ images: string[]; index: number; title: string } | null>(null);
+  const [materialCatalog, setMaterialCatalog] = useState<{ key: string; name: string; desc: string; images: { url: string; name: string }[] } | null>(null);
+  const [materialZoom, setMaterialZoom] = useState<{ url: string; name: string } | null>(null);
   const [containerLightboxIndex, setContainerLightboxIndex] = useState<number | null>(null);
 
-  const openMaterialLightbox = useCallback((images: string[], index: number, title: string) => {
-    setMaterialLightbox({ images, index, title });
+  const openMaterialCatalog = useCallback((material: typeof materialCollections[0]) => {
+    setMaterialCatalog({ key: material.key, name: material.name, desc: material.desc, images: material.images });
     document.body.style.overflow = 'hidden';
   }, []);
 
-  const closeMaterialLightbox = useCallback(() => {
-    setMaterialLightbox(null);
+  const closeMaterialCatalog = useCallback(() => {
+    setMaterialCatalog(null);
+    setMaterialZoom(null);
     document.body.style.overflow = '';
   }, []);
 
@@ -74,12 +76,12 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
       desc: t.highlights.materialFabricDesc,
       coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-velvet-fabric-vido-furniture.webp.jpg',
       images: [
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-velvet-fabric-vido-furniture.webp.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-boucle-fabric-vido-furniture.webp.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-canvas-fabric-vido-furniture.webp.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-chenille-fabric-vido-furniture.webp.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-corduroy-fabric-vido-furniture.webp.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-linen-fabric-vido-furniture.webp.jpg',
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-velvet-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricVelvet },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-boucle-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricBoucle },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-canvas-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricCanvas },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-chenille-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricChenille },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-corduroy-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricCorduroy },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/fabric/premium-linen-fabric-vido-furniture.webp.jpg', name: t.highlights.fabricLinen },
       ],
     },
     {
@@ -88,9 +90,9 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
       desc: t.highlights.materialWoodDesc,
       coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/sustainable-natural-wood-fsc-certified-vido-vietnam-furniture.jpg',
       images: [
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/sustainable-natural-wood-fsc-certified-vido-vietnam-furniture.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/carb-p2-compliant-mdf-board-vido-furniture.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/high-durability-plywood-core-furniture-material.jpg',
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/sustainable-natural-wood-fsc-certified-vido-vietnam-furniture.jpg', name: t.highlights.woodNatural },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/carb-p2-compliant-mdf-board-vido-furniture.jpg', name: t.highlights.woodMdf },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/wood/high-durability-plywood-core-furniture-material.jpg', name: t.highlights.woodPlywood },
       ],
     },
     {
@@ -99,9 +101,9 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
       desc: t.highlights.materialFoamDesc,
       coverImage: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619706794311_8b05f54b2b24e19ee0e5a65d77e87279.jpg',
       images: [
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619706794311_8b05f54b2b24e19ee0e5a65d77e87279.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619718467917_d4bce6bc4c7f6816051c3e2178cff975.jpg',
-        'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619743642329_eaaacd3f904c65440622e1cbd8dd87fb.jpg',
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619706794311_8b05f54b2b24e19ee0e5a65d77e87279.jpg', name: t.highlights.foam1 },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619718467917_d4bce6bc4c7f6816051c3e2178cff975.jpg', name: t.highlights.foam2 },
+        { url: 'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/materials/foam/z7619743642329_eaaacd3f904c65440622e1cbd8dd87fb.jpg', name: t.highlights.foam3 },
       ],
     },
   ];
@@ -134,16 +136,19 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (!materialLightbox) return;
-      if (e.key === 'Escape') closeMaterialLightbox();
-      if (e.key === 'ArrowRight') setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null);
-      if (e.key === 'ArrowLeft') setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null);
+      if (materialZoom && e.key === 'Escape') {
+        setMaterialZoom(null);
+        return;
+      }
+      if (materialCatalog && e.key === 'Escape') {
+        closeMaterialCatalog();
+      }
     };
-    if (materialLightbox) {
+    if (materialCatalog) {
       window.addEventListener('keydown', handleKey);
       return () => window.removeEventListener('keydown', handleKey);
     }
-  }, [materialLightbox, closeMaterialLightbox]);
+  }, [materialCatalog, materialZoom, closeMaterialCatalog]);
 
   const getContent = () => {
     switch (type) {
@@ -219,7 +224,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
   const factoryImages = [
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/quy-trinh-may-vido-vietnam.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/z7629649280104_fb532d40b4ba744316f94b9fa5ca9c76.jpg',
-    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/z7629649282904_446918059847170580a0844b683df543.jpg',
+    'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/e24ae2d20b74852adc65.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/khong-gia-nha-xuong-tai-vietnam.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/export-standard-5-ply-carton-packaging-vido-vietnam.jpg',
     'https://hrwtfycipxfzcsrmpetr.supabase.co/storage/v1/object/public/product-images/site-assets/workplace/export-standard-cutting-wood-vido-vietnam.jpg',
@@ -583,7 +588,7 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
                     <div
                       key={material.key}
                       className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500"
-                      onClick={() => openMaterialLightbox(material.images, 0, material.name)}
+                      onClick={() => openMaterialCatalog(material)}
                     >
                       {/* Cover Image */}
                       <Image
@@ -999,18 +1004,86 @@ export const HighlightDetail: React.FC<HighlightDetailProps> = ({ type }) => {
         </div>
       )}
 
-      {/* Material Gallery Lightbox */}
-      {materialLightbox && (
-        <ImageModal
-          isOpen={true}
-          imageUrl={materialLightbox.images[materialLightbox.index]}
-          altText={`${materialLightbox.title} ${materialLightbox.index + 1}`}
-          onClose={closeMaterialLightbox}
-          showNavigation={materialLightbox.images.length > 1}
-          enableZoom={false}
-          onNext={() => setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null)}
-          onPrev={() => setMaterialLightbox(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null)}
-        />
+      {/* Material Catalog Modal */}
+      {materialCatalog && (
+        <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={closeMaterialCatalog}>
+          <div
+            className="fixed inset-0 z-[201] flex items-end md:items-center justify-center"
+            onClick={closeMaterialCatalog}
+          >
+            <div
+              className="bg-white w-full md:w-[90vw] md:max-w-5xl max-h-[92vh] md:max-h-[88vh] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-500"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Catalog Header */}
+              <div className="sticky top-0 bg-white border-b border-gray-100 px-6 md:px-8 py-5 flex items-center justify-between z-10">
+                <div>
+                  <h2 className="font-heading font-bold text-xl md:text-2xl text-primary">
+                    {materialCatalog.name}
+                  </h2>
+                  <p className="text-gray-500 text-xs md:text-sm mt-1 max-w-lg leading-relaxed">
+                    {materialCatalog.desc}
+                  </p>
+                </div>
+                <button
+                  onClick={closeMaterialCatalog}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors shrink-0 ml-4"
+                  aria-label="Close catalog"
+                >
+                  <X size={22} className="text-gray-500" />
+                </button>
+              </div>
+
+              {/* Catalog Grid */}
+              <div className="overflow-y-auto flex-1 px-6 md:px-8 py-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                  {materialCatalog.images.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="group cursor-pointer"
+                      onClick={() => setMaterialZoom(img)}
+                    >
+                      <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm group-hover:shadow-lg transition-all duration-300">
+                        <Image
+                          src={img.url}
+                          alt={img.name}
+                          fill
+                          sizes="(max-width: 768px) 50vw, 30vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          quality={80}
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg">
+                            <ZoomIn size={18} className="text-primary" />
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-2.5 text-sm font-medium text-gray-800 text-center group-hover:text-accent transition-colors">
+                        {img.name}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* Zoom overlay for individual material image - rendered outside catalog for correct z-index */}
+      {materialZoom && (
+        <div className="fixed inset-0 z-[300]">
+          <ImageModal
+            isOpen={true}
+            imageUrl={materialZoom.url}
+            altText={materialZoom.name}
+            onClose={() => setMaterialZoom(null)}
+            showNavigation={false}
+            enableZoom={true}
+          />
+        </div>
       )}
 
       <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />

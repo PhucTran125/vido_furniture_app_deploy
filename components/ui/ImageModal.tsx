@@ -33,13 +33,14 @@ export const ImageModal: React.FC<ImageModalProps> = ({
         if (e.key === 'ArrowLeft' && onPrev) onPrev();
       }
     };
+    const prevOverflow = document.body.style.overflow;
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = prevOverflow;
       setIsHovering(false);
     };
   }, [isOpen, onClose, showNavigation, onNext, onPrev]);

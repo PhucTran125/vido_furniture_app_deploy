@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCategories, createCategory } from '@/lib/db/categories';
 import { requireAdminAuth } from '@/lib/auth/session';
+import { revalidatePath } from 'next/cache';
 
 // GET /api/admin/categories — list all categories
 export async function GET() {
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
     }
 
     const category = await createCategory(name.trim());
+    revalidatePath('/');
+    revalidatePath('/products');
     return NextResponse.json(category, { status: 201 });
   } catch (error: any) {
     if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
