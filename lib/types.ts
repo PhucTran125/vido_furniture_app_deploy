@@ -81,3 +81,29 @@ export interface CompanyInfo {
 }
 
 export type PageType = 'home' | 'about' | 'blog' | 'export-quality' | 'customer-service' | 'factory';
+
+// Blog types
+export type BlogStatus = 'draft' | 'published' | 'archived';
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription?: string;
+  content: Record<string, unknown>; // Tiptap JSON content
+  coverImage?: string;
+  author: string;
+  status: BlogStatus;
+  isFeatured: boolean;
+  featuredOrder?: number;
+  publishDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Valid blog status transitions
+export const VALID_STATUS_TRANSITIONS: Record<BlogStatus, BlogStatus[]> = {
+  draft: ['published'],
+  published: ['draft', 'archived'],
+  archived: ['draft'], // Cannot go directly to published
+};

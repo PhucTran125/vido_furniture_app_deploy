@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Package, Tag, Settings, LogOut, Home } from 'lucide-react';
+import { Package, Tag, Settings, LogOut, Home, FileText, Loader2 } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -13,6 +13,7 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [adminUsername, setAdminUsername] = useState('');
 
   // Check authentication via server session endpoint
@@ -20,6 +21,7 @@ export default function AdminLayout({
     if (pathname === '/admin/login') return;
 
     const checkAuth = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch('/api/admin/auth/session');
         if (res.ok) {
@@ -33,6 +35,8 @@ export default function AdminLayout({
       } catch {
         setIsAuthenticated(false);
         router.push('/admin/login');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -52,6 +56,15 @@ export default function AdminLayout({
   // Don't show layout on login page
   if (pathname === '/admin/login') {
     return <>{children}</>;
+  }
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="animate-spin text-accent" size={32} />
+      </div>
+    );
   }
 
   // Don't show layout if not authenticated
@@ -89,6 +102,16 @@ export default function AdminLayout({
                 >
                   <Tag size={20} />
                   Categories
+                </Link>
+                <Link
+                  href="/admin/blog"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${pathname?.startsWith('/admin/blog')
+                    ? 'bg-accent text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                >
+                  <FileText size={20} />
+                  Blog
                 </Link>
               </nav>
             </div>
