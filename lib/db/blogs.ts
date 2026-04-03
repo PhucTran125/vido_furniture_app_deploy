@@ -20,6 +20,9 @@ interface DbBlogPost {
   updated_at: string;
 }
 
+// Columns needed for list views (excludes heavy `content` JSONB)
+const LIST_COLUMNS = 'id, slug, title, short_description, cover_image, author, status, is_featured, featured_order, publish_date, created_at, updated_at' as const;
+
 // Generate URL-friendly slug from title
 export function generateSlug(title: string): string {
   return title
@@ -29,13 +32,14 @@ export function generateSlug(title: string): string {
 }
 
 // Convert DB row to app-level BlogPost
-function dbBlogToPost(dbBlog: DbBlogPost): BlogPost {
+// Handles both full rows (with content) and list rows (without content)
+function dbBlogToPost(dbBlog: Partial<DbBlogPost> & Pick<DbBlogPost, 'id' | 'slug' | 'title' | 'author' | 'status' | 'is_featured' | 'created_at' | 'updated_at'>): BlogPost {
   return {
     id: dbBlog.id,
     slug: dbBlog.slug,
     title: dbBlog.title,
     shortDescription: dbBlog.short_description || undefined,
-    content: dbBlog.content,
+    content: dbBlog.content || {},
     coverImage: dbBlog.cover_image || undefined,
     author: dbBlog.author,
     status: dbBlog.status as BlogStatus,
@@ -53,6 +57,7 @@ function dbBlogToPost(dbBlog: DbBlogPost): BlogPost {
 
 /**
  * Get published blogs with pagination
+ * Uses a single query with count + excludes heavy content column
  */
 export async function getPublishedBlogs(
   page: number = 1,
@@ -61,21 +66,9 @@ export async function getPublishedBlogs(
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
-  // Get total count
-  const { count, error: countError } = await supabase
+  const { data, count, error } = await supabase
     .from('blogs')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'published');
-
-  if (countError) {
-    console.error('Error counting blogs:', countError);
-    throw new Error(`Failed to count blogs: ${countError.message}`);
-  }
-
-  // Get paginated data
-  const { data, error } = await supabase
-    .from('blogs')
-    .select('*')
+    .select(LIST_COLUMNS, { count: 'exact' })
     .eq('status', 'published')
     .order('publish_date', { ascending: false })
     .range(from, to);
@@ -117,7 +110,7 @@ export async function getBlogBySlug(slug: string): Promise<BlogPost | null> {
 export async function getFeaturedBlogs(): Promise<BlogPost[]> {
   const { data, error } = await supabase
     .from('blogs')
-    .select('*')
+    .select(LIST_COLUMNS)
     .eq('status', 'published')
     .eq('is_featured', true)
     .order('featured_order', { ascending: true });
@@ -140,7 +133,7 @@ export async function getFeaturedBlogs(): Promise<BlogPost[]> {
 export async function getAllBlogs(): Promise<BlogPost[]> {
   const { data, error } = await supabaseAdmin
     .from('blogs')
-    .select('*')
+    .select(LIST_COLUMNS)
     .order('created_at', { ascending: false });
 
   if (error) {
