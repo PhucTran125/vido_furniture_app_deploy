@@ -25,8 +25,8 @@ export default async function HomePage() {
       </div>
       <FeaturedCollection products={products} />
       <Achievements />
-      <FeaturedBlogs blogs={featuredBlogs} />
       <Contact />
+      <FeaturedBlogs blogs={featuredBlogs} />
     </>
   );
 }

@@ -45,25 +45,21 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
           </div>
 
           {/* Featured Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogs.map((blog, index) => (
-              <Link 
-                key={blog.id} 
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {blogs.slice(0, 4).map((blog) => (
+              <Link
+                key={blog.id}
                 href={`/blog/${blog.slug}`}
-                className={`group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 h-full
-                  ${index === 0 && blogs.length === 3 ? 'md:col-span-2 lg:col-span-1 md:flex-row lg:flex-col' : ''}
-                `}
+                className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 h-full"
               >
                 {/* Cover Image */}
-                <div className={`relative overflow-hidden bg-gray-100 ${
-                  index === 0 && blogs.length === 3 ? 'md:w-1/2 lg:w-full aspect-[16/10] md:aspect-auto lg:aspect-[16/10]' : 'aspect-[16/10]'
-                }`}>
+                <div className="relative overflow-hidden bg-gray-100 aspect-[16/10]">
                   {blog.coverImage ? (
                     <NextImage
                       src={blog.coverImage}
                       alt={blog.title}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
@@ -79,11 +75,9 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
                 </div>
 
                 {/* Content */}
-                <div className={`flex flex-col flex-1 p-6 md:p-8 ${
-                  index === 0 && blogs.length === 3 ? 'md:w-1/2 lg:w-full' : ''
-                }`}>
+                <div className="flex flex-col flex-1 p-6">
                   {/* Meta */}
-                  <div className="flex items-center gap-4 text-xs font-medium text-gray-500 mb-4">
+                  <div className="flex items-center gap-3 text-xs font-medium text-gray-500 mb-3">
                     <div className="flex items-center gap-1.5">
                       <Calendar size={14} className="text-accent" />
                       {blog.publishDate ? new Date(blog.publishDate).toLocaleDateString('en-US', {
@@ -97,18 +91,18 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-heading font-bold text-xl text-gray-900 mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+                  <h3 className="font-heading font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                     {blog.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2 flex-1">
                     {blog.shortDescription || 'Read full article...'}
                   </p>
 
                   {/* Read More */}
                   <div className="mt-auto flex items-center gap-2 text-sm font-bold text-primary group-hover:text-accent transition-colors">
-                    {t.blog.readMore} 
+                    {t.blog.readMore}
                     <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>

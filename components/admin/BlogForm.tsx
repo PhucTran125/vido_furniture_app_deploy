@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BlogPost, BlogStatus, VALID_STATUS_TRANSITIONS } from '@/lib/types';
 import { TiptapEditor } from './TiptapEditor';
-import { ArrowLeft, Save, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Upload, X, Image as ImageIcon, Star } from 'lucide-react';
 
 const STATUS_LABELS: Record<BlogStatus, string> = {
   draft: 'Draft (Hidden)',
@@ -31,6 +31,8 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
     coverImage: blog?.coverImage || '',
     status: blog?.status || 'draft' as BlogStatus,
     publishDate: blog?.publishDate ? new Date(blog.publishDate).toISOString().slice(0, 16) : '',
+    isFeatured: blog?.isFeatured ?? false,
+    featuredOrder: blog?.featuredOrder ?? '',
   });
 
   // --- Image Upload ---
@@ -94,6 +96,10 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
       if (formData.shortDescription) payload.shortDescription = formData.shortDescription;
       if (formData.coverImage) payload.coverImage = formData.coverImage;
       if (formData.publishDate) payload.publishDate = new Date(formData.publishDate).toISOString();
+      payload.isFeatured = formData.isFeatured;
+      payload.featuredOrder = formData.isFeatured && formData.featuredOrder !== ''
+        ? Number(formData.featuredOrder)
+        : null;
 
       const url = mode === 'create'
         ? '/api/admin/blogs'
@@ -231,6 +237,47 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent" />
               <p className="text-xs text-gray-500 mt-1">Leave empty to auto-set on publish.</p>
             </div>
+          </div>
+
+          {/* Featured on Home */}
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+            <h3 className="flex items-center gap-2 font-semibold text-gray-900 border-b pb-2">
+              <Star size={16} className="text-accent" />
+              Featured on Home
+            </h3>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isFeatured}
+                onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
+              />
+              <span className="text-sm text-gray-700">
+                Show this post in the <span className="font-medium">Featured Blogs</span> section on the home page.
+              </span>
+            </label>
+
+            {formData.isFeatured && (
+              <div>
+                <label htmlFor="featuredOrder" className="block text-sm font-medium text-gray-700 mb-2">
+                  Display Order
+                </label>
+                <input
+                  type="number"
+                  id="featuredOrder"
+                  min={1}
+                  max={99}
+                  value={formData.featuredOrder}
+                  onChange={(e) => setFormData({ ...formData, featuredOrder: e.target.value })}
+                  placeholder="1"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Lower numbers appear first. Only the top 4 featured posts are shown on the home page.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Cover Image */}

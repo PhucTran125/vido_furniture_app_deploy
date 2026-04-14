@@ -38,6 +38,8 @@ export async function POST(request: Request) {
       coverImage: data.coverImage,
       status: data.status,
       publishDate: data.publishDate,
+      isFeatured: data.isFeatured,
+      featuredOrder: data.featuredOrder,
     });
 
     revalidatePath('/');

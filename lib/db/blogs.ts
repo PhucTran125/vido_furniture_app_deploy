@@ -113,7 +113,9 @@ export async function getFeaturedBlogs(): Promise<BlogPost[]> {
     .select(LIST_COLUMNS)
     .eq('status', 'published')
     .eq('is_featured', true)
-    .order('featured_order', { ascending: true });
+    .order('featured_order', { ascending: true, nullsFirst: false })
+    .order('publish_date', { ascending: false })
+    .limit(4);
 
   if (error) {
     console.error('Error fetching featured blogs:', error);
@@ -173,6 +175,8 @@ export async function createBlog(data: {
   coverImage?: string;
   status?: BlogStatus;
   publishDate?: string;
+  isFeatured?: boolean;
+  featuredOrder?: number | null;
 }): Promise<BlogPost> {
   const slug = generateSlug(data.title);
 
@@ -196,6 +200,8 @@ export async function createBlog(data: {
     author: "VIDO Furniture's CEO",
     status: data.status || 'draft',
     publish_date: data.publishDate || (data.status === 'published' ? new Date().toISOString() : null),
+    is_featured: data.isFeatured ?? false,
+    featured_order: data.isFeatured ? (data.featuredOrder ?? null) : null,
   };
 
   const { data: created, error } = await supabaseAdmin
@@ -223,6 +229,8 @@ export async function updateBlog(
     content?: Record<string, unknown>;
     coverImage?: string;
     publishDate?: string;
+    isFeatured?: boolean;
+    featuredOrder?: number | null;
   }
 ): Promise<BlogPost> {
   const dbUpdates: Record<string, unknown> = {};
@@ -235,6 +243,12 @@ export async function updateBlog(
   if (data.content !== undefined) dbUpdates.content = data.content;
   if (data.coverImage !== undefined) dbUpdates.cover_image = data.coverImage;
   if (data.publishDate !== undefined) dbUpdates.publish_date = data.publishDate;
+  if (data.isFeatured !== undefined) {
+    dbUpdates.is_featured = data.isFeatured;
+    dbUpdates.featured_order = data.isFeatured ? (data.featuredOrder ?? null) : null;
+  } else if (data.featuredOrder !== undefined) {
+    dbUpdates.featured_order = data.featuredOrder;
+  }
 
   const { data: updated, error } = await supabaseAdmin
     .from('blogs')

@@ -50,6 +50,8 @@ export async function PUT(
       content: data.content,
       coverImage: data.coverImage,
       publishDate: data.publishDate,
+      isFeatured: data.isFeatured,
+      featuredOrder: data.featuredOrder,
     });
 
     revalidatePath('/');
