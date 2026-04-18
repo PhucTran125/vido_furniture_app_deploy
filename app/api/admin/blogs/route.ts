@@ -24,15 +24,15 @@ export async function POST(request: Request) {
 
     const data = await request.json();
 
-    if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
-      return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+    if (!data.title || typeof data.title !== 'object' || !data.title.en?.trim()) {
+      return NextResponse.json({ error: 'English title is required' }, { status: 400 });
     }
-    if (!data.content || typeof data.content !== 'object') {
-      return NextResponse.json({ error: 'Content is required' }, { status: 400 });
+    if (!data.content || typeof data.content !== 'object' || !data.content.en) {
+      return NextResponse.json({ error: 'English content is required' }, { status: 400 });
     }
 
     const blog = await createBlog({
-      title: data.title.trim(),
+      title: { en: data.title.en.trim(), vi: (data.title.vi || '').trim() },
       shortDescription: data.shortDescription,
       content: data.content,
       coverImage: data.coverImage,

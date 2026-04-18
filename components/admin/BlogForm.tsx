@@ -2,14 +2,21 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BlogPost, BlogStatus, VALID_STATUS_TRANSITIONS } from '@/lib/types';
+import { BlogPost, BlogStatus, VALID_STATUS_TRANSITIONS, LocalizedString, LocalizedRichContent } from '@/lib/types';
 import { TiptapEditor } from './TiptapEditor';
-import { ArrowLeft, Save, Loader2, Upload, X, Image as ImageIcon, Star } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Upload, X, Image as ImageIcon, Star, Globe } from 'lucide-react';
 
 const STATUS_LABELS: Record<BlogStatus, string> = {
   draft: 'Draft (Hidden)',
   published: 'Published (Public)',
   archived: 'Archived (Hidden)',
+};
+
+type Lang = 'en' | 'vi';
+
+const LANG_LABELS: Record<Lang, string> = {
+  en: 'English',
+  vi: 'Tiếng Việt',
 };
 
 interface BlogFormProps {
@@ -23,11 +30,12 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeLang, setActiveLang] = useState<Lang>('en');
 
   const [formData, setFormData] = useState({
-    title: blog?.title || '',
-    shortDescription: blog?.shortDescription || '',
-    content: blog?.content || null,
+    title: (blog?.title as LocalizedString) || { en: '', vi: '' },
+    shortDescription: (blog?.shortDescription as LocalizedString) || { en: '', vi: '' },
+    content: (blog?.content as LocalizedRichContent) || { en: null, vi: null },
     coverImage: blog?.coverImage || '',
     status: blog?.status || 'draft' as BlogStatus,
     publishDate: blog?.publishDate ? new Date(blog.publishDate).toISOString().slice(0, 16) : '',
@@ -76,8 +84,14 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!formData.title || !formData.content) {
-      setErrorMessage('Title and content are required');
+    if (!formData.title.en.trim()) {
+      setErrorMessage('English title is required');
+      setActiveLang('en');
+      return;
+    }
+    if (!formData.content.en) {
+      setErrorMessage('English content is required');
+      setActiveLang('en');
       return;
     }
 
@@ -88,12 +102,12 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
         content: formData.content,
       };
 
-      // For create mode, include status directly
       if (mode === 'create') {
         payload.status = formData.status;
       }
 
-      if (formData.shortDescription) payload.shortDescription = formData.shortDescription;
+      const shortDesc = formData.shortDescription;
+      if (shortDesc.en || shortDesc.vi) payload.shortDescription = shortDesc;
       if (formData.coverImage) payload.coverImage = formData.coverImage;
       if (formData.publishDate) payload.publishDate = new Date(formData.publishDate).toISOString();
       payload.isFeatured = formData.isFeatured;
@@ -118,7 +132,6 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
         return;
       }
 
-      // For edit mode, handle status change separately via the status endpoint
       if (mode === 'edit' && blog && formData.status !== blog.status) {
         const statusRes = await fetch(`/api/admin/blogs/${blog.id}/status`, {
           method: 'PATCH',
@@ -141,6 +154,18 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
     } finally {
       setSaving(false);
     }
+  };
+
+  const updateTitle = (lang: Lang, value: string) => {
+    setFormData({ ...formData, title: { ...formData.title, [lang]: value } });
+  };
+
+  const updateShortDescription = (lang: Lang, value: string) => {
+    setFormData({ ...formData, shortDescription: { ...formData.shortDescription, [lang]: value } });
+  };
+
+  const updateContent = (lang: Lang, value: Record<string, unknown>) => {
+    setFormData({ ...formData, content: { ...formData.content, [lang]: value } });
   };
 
   return (
@@ -175,31 +200,73 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content Column */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Language Tabs */}
+          <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+            {(['en', 'vi'] as Lang[]).map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => setActiveLang(lang)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeLang === lang
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Globe size={14} />
+                {LANG_LABELS[lang]}
+                {lang === 'en' && <span className="text-xs text-red-400">*</span>}
+              </button>
+            ))}
+          </div>
+
+          {/* Title & Description */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">Post Title *</label>
-              <input type="text" id="title" required value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              <label htmlFor={`title-${activeLang}`} className="block text-sm font-medium text-gray-700 mb-2">
+                Post Title {activeLang === 'en' && <span className="text-red-400">*</span>}
+                <span className="text-xs text-gray-400 ml-2">({LANG_LABELS[activeLang]})</span>
+              </label>
+              <input type="text" id={`title-${activeLang}`}
+                value={formData.title[activeLang]}
+                onChange={(e) => updateTitle(activeLang, e.target.value)}
                 className="w-full px-4 py-2.5 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
-                placeholder="e.g., Top 10 Furniture Trends in 2026" />
+                placeholder={activeLang === 'en' ? 'e.g., Top 10 Furniture Trends in 2026' : 'VD: Top 10 Xu Hướng Nội Thất 2026'} />
             </div>
 
             <div>
-              <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
-              <textarea id="shortDescription" rows={3} value={formData.shortDescription}
-                onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+              <label htmlFor={`shortDescription-${activeLang}`} className="block text-sm font-medium text-gray-700 mb-2">
+                Short Description
+                <span className="text-xs text-gray-400 ml-2">({LANG_LABELS[activeLang]})</span>
+              </label>
+              <textarea id={`shortDescription-${activeLang}`} rows={3}
+                value={formData.shortDescription[activeLang]}
+                onChange={(e) => updateShortDescription(activeLang, e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent"
-                placeholder="A brief summary for the blog card..." />
+                placeholder={activeLang === 'en' ? 'A brief summary for the blog card...' : 'Tóm tắt ngắn cho thẻ bài viết...'} />
             </div>
           </div>
 
+          {/* Content Editor - render both but show/hide to preserve editor state */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <label className="block text-sm font-medium text-gray-700 mb-4">Content *</label>
-            <TiptapEditor
-              content={formData.content}
-              onChange={(content) => setFormData({ ...formData, content })}
-              placeholder="Write your blog post here..."
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-4">
+              Content {activeLang === 'en' && <span className="text-red-400">*</span>}
+              <span className="text-xs text-gray-400 ml-2">({LANG_LABELS[activeLang]})</span>
+            </label>
+            <div className={activeLang === 'en' ? '' : 'hidden'}>
+              <TiptapEditor
+                content={formData.content.en}
+                onChange={(content) => updateContent('en', content)}
+                placeholder="Write your blog post here..."
+              />
+            </div>
+            <div className={activeLang === 'vi' ? '' : 'hidden'}>
+              <TiptapEditor
+                content={formData.content.vi}
+                onChange={(content) => updateContent('vi', content)}
+                placeholder="Viết bài blog tại đây..."
+              />
+            </div>
           </div>
         </div>
 
@@ -208,7 +275,7 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
           {/* Status Settings */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
             <h3 className="font-semibold text-gray-900 border-b pb-2">Publishing</h3>
-            
+
             <div>
               <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <select id="status" value={formData.status}
@@ -283,7 +350,7 @@ export function BlogForm({ blog, mode }: BlogFormProps) {
           {/* Cover Image */}
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
             <h3 className="font-semibold text-gray-900 border-b pb-2">Cover Image</h3>
-            
+
             {formData.coverImage ? (
               <div className="relative group rounded-lg overflow-hidden border border-gray-200">
                 <img src={formData.coverImage} alt="Cover" className="w-full h-48 object-cover" />

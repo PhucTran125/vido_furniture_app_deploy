@@ -3,12 +3,11 @@
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { BlogPost } from '@/lib/types';
+import { BlogPost, getLocalizedString, getLocalizedRichContent } from '@/lib/types';
 import { Section } from './ui/Section';
 import { generateHTML } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
-import TiptapLink from '@tiptap/extension-link';
 import DOMPurify from 'isomorphic-dompurify';
 import { ArrowLeft, Calendar, User, Share2, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -19,19 +18,29 @@ interface BlogDetailProps {
 
 export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
   const [copied, setCopied] = useState(false);
+  const { language } = useLanguage();
+
+  const title = getLocalizedString(blog.title, language);
+  const shortDescription = getLocalizedString(blog.shortDescription, language);
+  const localizedContent = getLocalizedRichContent(blog.content, language);
 
   // Convert Tiptap JSON content to HTML for display
   const htmlContent = useMemo(() => {
-    if (!blog.content) return '';
-    
+    if (!localizedContent) return '';
+
     try {
-      const rawHtml = generateHTML(blog.content, [
-        StarterKit,
+      const rawHtml = generateHTML(localizedContent, [
+        StarterKit.configure({
+          link: {
+            HTMLAttributes: {
+              class: 'text-accent underline hover:text-primary transition-colors cursor-pointer',
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            },
+          },
+        }),
         Image.configure({
           HTMLAttributes: { class: 'max-w-full rounded-xl my-8 mx-auto shadow-sm' },
-        }),
-        TiptapLink.configure({
-          HTMLAttributes: { class: 'text-accent underline hover:text-primary transition-colors' },
         }),
       ]);
       return DOMPurify.sanitize(rawHtml, {
@@ -42,7 +51,7 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
       console.error('Error rendering blog content:', e);
       return '<p>Error loading content.</p>';
     }
-  }, [blog.content]);
+  }, [localizedContent]);
 
   const { t } = useLanguage();
 
@@ -59,8 +68,8 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: blog.title,
-        text: blog.shortDescription || '',
+        title,
+        text: shortDescription,
         url: window.location.href,
       }).catch(console.error);
     } else {
@@ -100,12 +109,12 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
           </div>
 
           <h1 className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white leading-[1.1] mb-8">
-            {blog.title}
+            {title}
           </h1>
 
-          {blog.shortDescription && (
+          {shortDescription && (
             <p className="text-xl text-white/80 max-w-3xl mx-auto font-light leading-relaxed">
-              {blog.shortDescription}
+              {shortDescription}
             </p>
           )}
         </div>
@@ -117,7 +126,7 @@ export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
           <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white mb-16 border-4 border-white aspect-[21/9]">
             <NextImage
               src={blog.coverImage}
-              alt={blog.title}
+              alt={title}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 896px"

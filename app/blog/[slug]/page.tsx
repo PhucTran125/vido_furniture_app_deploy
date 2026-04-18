@@ -2,6 +2,7 @@ import { getBlogBySlug } from '@/lib/db/blogs';
 import { notFound } from 'next/navigation';
 import { BlogDetail } from '@/components/BlogDetail';
 import type { Metadata, ResolvingMetadata } from 'next';
+import { getLocalizedString } from '@/lib/types';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -24,13 +25,15 @@ export async function generateMetadata(
 
   const previousImages = (await parent).openGraph?.images || [];
   const imageUrl = blog.coverImage || '/og-image.jpg';
+  const title = getLocalizedString(blog.title, 'en');
+  const description = getLocalizedString(blog.shortDescription, 'en');
 
   return {
-    title: `${blog.title} | VIDO Blog`,
-    description: blog.shortDescription || `Read ${blog.title} by ${blog.author}`,
+    title: `${title} | VIDO Blog`,
+    description: description || `Read ${title} by ${blog.author}`,
     openGraph: {
-      title: blog.title,
-      description: blog.shortDescription || `Read ${blog.title} by ${blog.author}`,
+      title,
+      description: description || `Read ${title} by ${blog.author}`,
       url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://vido-furniture.com'}/blog/${blog.slug}`,
       siteName: 'VIDO Furniture',
       images: [
@@ -38,7 +41,7 @@ export async function generateMetadata(
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: blog.title,
+          alt: title,
         },
         ...previousImages,
       ],
@@ -48,8 +51,8 @@ export async function generateMetadata(
     },
     twitter: {
       card: 'summary_large_image',
-      title: blog.title,
-      description: blog.shortDescription || `Read ${blog.title} by ${blog.author}`,
+      title,
+      description: description || `Read ${title} by ${blog.author}`,
       images: [imageUrl],
     },
   };

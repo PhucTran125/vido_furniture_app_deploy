@@ -37,15 +37,15 @@ export async function PUT(
     const { id } = await params;
     const data = await request.json();
 
-    if (data.title !== undefined && (typeof data.title !== 'string' || data.title.trim().length === 0)) {
-      return NextResponse.json({ error: 'Title cannot be empty' }, { status: 400 });
+    if (data.title !== undefined && (typeof data.title !== 'object' || !data.title.en?.trim())) {
+      return NextResponse.json({ error: 'English title is required' }, { status: 400 });
     }
-    if (data.content !== undefined && typeof data.content !== 'object') {
-      return NextResponse.json({ error: 'Content must be valid JSON' }, { status: 400 });
+    if (data.content !== undefined && (typeof data.content !== 'object' || !data.content.en)) {
+      return NextResponse.json({ error: 'English content is required' }, { status: 400 });
     }
 
     const blog = await updateBlog(id, {
-      title: data.title?.trim(),
+      title: data.title ? { en: data.title.en.trim(), vi: (data.title.vi || '').trim() } : undefined,
       shortDescription: data.shortDescription,
       content: data.content,
       coverImage: data.coverImage,

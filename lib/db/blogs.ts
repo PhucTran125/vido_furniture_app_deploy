@@ -1,15 +1,17 @@
 import { supabase } from '@/lib/supabase/client';
 import { supabaseAdmin } from '@/lib/supabase/server';
-import type { BlogPost, BlogStatus } from '@/lib/types';
+import type { BlogPost, BlogStatus, LocalizedString, LocalizedRichContent } from '@/lib/types';
 import { VALID_STATUS_TRANSITIONS } from '@/lib/types';
 
 // Database blog type (matches Supabase schema)
+// title, short_description, content are `unknown` because the DB may
+// hold the old plain-string format or the new bilingual JSONB format.
 interface DbBlogPost {
   id: string;
   slug: string;
-  title: string;
-  short_description: string | null;
-  content: Record<string, unknown>;
+  title: unknown;
+  short_description: unknown;
+  content: unknown;
   cover_image: string | null;
   author: string;
   status: string;
@@ -18,6 +20,28 @@ interface DbBlogPost {
   publish_date: string | null;
   created_at: string;
   updated_at: string;
+}
+
+function normalizeLocalizedString(value: unknown): LocalizedString {
+  if (!value) return { en: '', vi: '' };
+  if (typeof value === 'string') return { en: value, vi: '' };
+  if (typeof value === 'object' && value !== null) {
+    const obj = value as Record<string, unknown>;
+    return { en: String(obj.en || ''), vi: String(obj.vi || '') };
+  }
+  return { en: '', vi: '' };
+}
+
+function normalizeLocalizedContent(value: unknown): LocalizedRichContent {
+  if (!value || typeof value !== 'object') return { en: null, vi: null };
+  const obj = value as Record<string, unknown>;
+  if ('en' in obj && 'vi' in obj && Object.keys(obj).length === 2) {
+    return {
+      en: (obj.en as Record<string, unknown>) || null,
+      vi: (obj.vi as Record<string, unknown>) || null,
+    };
+  }
+  return { en: obj as Record<string, unknown>, vi: null };
 }
 
 // Columns needed for list views (excludes heavy `content` JSONB)
@@ -34,12 +58,15 @@ export function generateSlug(title: string): string {
 // Convert DB row to app-level BlogPost
 // Handles both full rows (with content) and list rows (without content)
 function dbBlogToPost(dbBlog: Partial<DbBlogPost> & Pick<DbBlogPost, 'id' | 'slug' | 'title' | 'author' | 'status' | 'is_featured' | 'created_at' | 'updated_at'>): BlogPost {
+  const title = normalizeLocalizedString(dbBlog.title);
+  const shortDesc = normalizeLocalizedString(dbBlog.short_description);
+
   return {
     id: dbBlog.id,
     slug: dbBlog.slug,
-    title: dbBlog.title,
-    shortDescription: dbBlog.short_description || undefined,
-    content: dbBlog.content || {},
+    title,
+    shortDescription: (shortDesc.en || shortDesc.vi) ? shortDesc : undefined,
+    content: normalizeLocalizedContent(dbBlog.content || null),
     coverImage: dbBlog.cover_image || undefined,
     author: dbBlog.author,
     status: dbBlog.status as BlogStatus,
@@ -169,16 +196,16 @@ export async function getBlogById(id: string): Promise<BlogPost | null> {
  * Create a new blog post (admin)
  */
 export async function createBlog(data: {
-  title: string;
-  shortDescription?: string;
-  content: Record<string, unknown>;
+  title: LocalizedString;
+  shortDescription?: LocalizedString;
+  content: LocalizedRichContent;
   coverImage?: string;
   status?: BlogStatus;
   publishDate?: string;
   isFeatured?: boolean;
   featuredOrder?: number | null;
 }): Promise<BlogPost> {
-  const slug = generateSlug(data.title);
+  const slug = generateSlug(data.title.en || data.title.vi);
 
   // Check for slug uniqueness
   const { data: existing } = await supabaseAdmin
@@ -224,9 +251,9 @@ export async function createBlog(data: {
 export async function updateBlog(
   id: string,
   data: {
-    title?: string;
-    shortDescription?: string;
-    content?: Record<string, unknown>;
+    title?: LocalizedString;
+    shortDescription?: LocalizedString;
+    content?: LocalizedRichContent;
     coverImage?: string;
     publishDate?: string;
     isFeatured?: boolean;
@@ -237,7 +264,6 @@ export async function updateBlog(
 
   if (data.title !== undefined) {
     dbUpdates.title = data.title;
-    // Preserve existing slug to avoid breaking public URLs
   }
   if (data.shortDescription !== undefined) dbUpdates.short_description = data.shortDescription;
   if (data.content !== undefined) dbUpdates.content = data.content;

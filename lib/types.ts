@@ -85,12 +85,19 @@ export type PageType = 'home' | 'about' | 'blog' | 'export-quality' | 'customer-
 // Blog types
 export type BlogStatus = 'draft' | 'published' | 'archived';
 
+export type LocalizedString = LocalizedContent;
+
+export type LocalizedRichContent = {
+  en: Record<string, unknown> | null;
+  vi: Record<string, unknown> | null;
+};
+
 export interface BlogPost {
   id: string;
   slug: string;
-  title: string;
-  shortDescription?: string;
-  content: Record<string, unknown>; // Tiptap JSON content
+  title: LocalizedString;
+  shortDescription?: LocalizedString;
+  content: LocalizedRichContent;
   coverImage?: string;
   author: string;
   status: BlogStatus;
@@ -99,6 +106,21 @@ export interface BlogPost {
   publishDate?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export function getLocalizedString(value: LocalizedString | string | undefined, lang: 'en' | 'vi'): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  return value[lang] || value.en || '';
+}
+
+export function getLocalizedRichContent(value: LocalizedRichContent | Record<string, unknown> | null, lang: 'en' | 'vi'): Record<string, unknown> | null {
+  if (!value) return null;
+  if ('en' in value && 'vi' in value && Object.keys(value).length === 2) {
+    const v = value as unknown as LocalizedRichContent;
+    return v[lang] || v.en || null;
+  }
+  return value as Record<string, unknown>;
 }
 
 // Valid blog status transitions

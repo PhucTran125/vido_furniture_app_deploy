@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { Section } from './ui/Section';
-import { BlogPost } from '@/lib/types';
+import { BlogPost, getLocalizedString } from '@/lib/types';
 import { ArrowRight, Calendar, User, BookOpen } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -13,7 +13,7 @@ interface FeaturedBlogsProps {
 }
 
 export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   if (!blogs || blogs.length === 0) return null;
 
@@ -57,7 +57,7 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
                   {blog.coverImage ? (
                     <NextImage
                       src={blog.coverImage}
-                      alt={blog.title}
+                      alt={getLocalizedString(blog.title, language)}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -92,12 +92,12 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
 
                   {/* Title */}
                   <h3 className="font-heading font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
-                    {blog.title}
+                    {getLocalizedString(blog.title, language)}
                   </h3>
 
                   {/* Description */}
                   <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2 flex-1">
-                    {blog.shortDescription || 'Read full article...'}
+                    {getLocalizedString(blog.shortDescription, language) || 'Read full article...'}
                   </p>
 
                   {/* Read More */}

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { getAllBlogs } from '@/lib/db/blogs';
+import { getLocalizedString } from '@/lib/types';
 import { BlogStatusBadge } from '@/components/admin/BlogStatusBadge'; // We'll create this next
 import { DeleteBlogButton } from '@/components/admin/DeleteBlogButton';
 
@@ -44,16 +45,16 @@ export default async function AdminBlogPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       {blog.coverImage ? (
-                        <img src={blog.coverImage} alt={blog.title} className="w-12 h-12 rounded object-cover border border-gray-200" />
+                        <img src={blog.coverImage} alt={getLocalizedString(blog.title, 'en')} className="w-12 h-12 rounded object-cover border border-gray-200" />
                       ) : (
                         <div className="w-12 h-12 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-gray-400 text-xs">
                           No Img
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-gray-900">{blog.title}</p>
+                        <p className="font-semibold text-gray-900">{getLocalizedString(blog.title, 'en')}</p>
                         <p className="text-xs text-gray-500 mt-1 max-w-md truncate">
-                          {blog.shortDescription || 'No description'}
+                          {getLocalizedString(blog.shortDescription, 'en') || 'No description'}
                         </p>
                       </div>
                     </div>
@@ -87,7 +88,7 @@ export default async function AdminBlogPage() {
                       >
                         <Edit size={18} />
                       </Link>
-                      <DeleteBlogButton id={blog.id} title={blog.title} />
+                      <DeleteBlogButton id={blog.id} title={getLocalizedString(blog.title, 'en')} />
                     </div>
                   </td>
                 </tr>

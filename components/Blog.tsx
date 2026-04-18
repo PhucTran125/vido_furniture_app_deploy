@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { Section } from './ui/Section';
-import { BlogPost } from '@/lib/types';
+import { BlogPost, getLocalizedString } from '@/lib/types';
 import { ArrowRight, Calendar, User, FileText } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -15,7 +15,7 @@ interface BlogProps {
 }
 
 export const Blog: React.FC<BlogProps> = ({ blogs, currentPage, totalPages }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,7 +61,7 @@ export const Blog: React.FC<BlogProps> = ({ blogs, currentPage, totalPages }) =>
                       {blog.coverImage ? (
                         <NextImage
                           src={blog.coverImage}
-                          alt={blog.title}
+                          alt={getLocalizedString(blog.title, language)}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -93,12 +93,12 @@ export const Blog: React.FC<BlogProps> = ({ blogs, currentPage, totalPages }) =>
 
                       {/* Title */}
                       <h3 className="font-heading font-bold text-xl text-gray-900 mb-3 line-clamp-2 group-hover:text-accent transition-colors">
-                        {blog.title}
+                        {getLocalizedString(blog.title, language)}
                       </h3>
 
                       {/* Description */}
                       <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
-                        {blog.shortDescription || 'Read full article...'}
+                        {getLocalizedString(blog.shortDescription, language) || 'Read full article...'}
                       </p>
 
                       {/* Read More */}
