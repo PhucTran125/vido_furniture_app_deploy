@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Blog | News & Insights | VIDO Furniture',
   description: 'Latest news and updates from VIDO Furniture - furniture manufacturing insights, industry trends, and company announcements.',
+  alternates: {
+    canonical: '/blog',
+  },
 };
 
 export const revalidate = 3600; // Revalidate every hour

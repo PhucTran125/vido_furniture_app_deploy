@@ -17,7 +17,10 @@ const montserrat = Montserrat({
   display: 'swap',
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vidofurniture.com';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'VIDO Furniture | Premier Manufacturing in Vietnam',
   description: 'Export-quality furniture manufacturer specializing in compact furniture, creative seating, storage benches, and home decor for European, US, and Japanese markets.',
   keywords: 'furniture manufacturer Vietnam, export furniture, B2B furniture wholesale, compact furniture, creative seating',
@@ -28,10 +31,13 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'VIDO Furniture - Vietnam Premier Manufacturer',
     description: 'Export-quality furniture for international markets',
-    url: 'https://vidofurniture.com',
+    url: SITE_URL,
     siteName: 'VIDO Furniture',
     locale: 'en_US',
     type: 'website',

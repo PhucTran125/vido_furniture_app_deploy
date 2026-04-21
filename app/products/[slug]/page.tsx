@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${product.name.en} | VIDO Furniture`,
     description,
     keywords: `${product.name.en}, ${product.itemNo}, ${product.category}, furniture, VIDO`,
+    alternates: {
+      canonical: `/products/${slug}`,
+    },
     openGraph: {
       title: product.name.en,
       description: product.description?.en[0] || description,

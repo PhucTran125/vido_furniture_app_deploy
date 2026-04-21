@@ -8,6 +8,9 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: 'Products | VIDO Furniture',
   description: 'Browse our complete catalog of high-quality furniture for export.',
+  alternates: {
+    canonical: '/products',
+  },
 };
 
 export default async function ProductsPage() {

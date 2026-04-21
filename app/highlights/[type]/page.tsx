@@ -41,6 +41,9 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
   return {
     title: `${config.title} | VIDO Furniture`,
     description: config.description,
+    alternates: {
+      canonical: `/highlights/${type}`,
+    },
   };
 }
 

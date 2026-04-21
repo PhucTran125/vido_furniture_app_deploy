@@ -31,6 +31,9 @@ export async function generateMetadata(
   return {
     title: `${title} | VIDO Blog`,
     description: description || `Read ${title} by ${blog.author}`,
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
     openGraph: {
       title,
       description: description || `Read ${title} by ${blog.author}`,
