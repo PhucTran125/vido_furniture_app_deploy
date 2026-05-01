@@ -49,7 +49,7 @@ export const FeaturedBlogs: React.FC<FeaturedBlogsProps> = ({ blogs }) => {
             {blogs.slice(0, 4).map((blog) => (
               <Link
                 key={blog.id}
-                href={`/blog/${blog.slug}`}
+                href={`/blog/${blog.slug}/`}
                 className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 h-full"
               >
                 {/* Cover Image */}

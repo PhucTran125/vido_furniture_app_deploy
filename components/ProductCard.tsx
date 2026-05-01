@@ -43,12 +43,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, id }) => {
       >
         {/* Image Container */}
         <Link
-          href={`/products/${slug}`}
+          href={`/products/${slug}/`}
           className="relative aspect-square bg-[#F9F9F9] overflow-hidden cursor-pointer block"
         >
           <img
             src={getMainImageUrl(product)}
-            alt={name}
+            alt={`${name} - ${product.category} - VIDO Furniture (Item ${product.itemNo})`}
             loading="lazy"
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000 ease-out"
           />
@@ -63,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, id }) => {
 
         {/* Content Area */}
         <div className="p-5 flex flex-col flex-grow text-center">
-          <Link href={`/products/${slug}`}>
+          <Link href={`/products/${slug}/`}>
             <h3 className="font-heading font-bold text-lg text-primary leading-tight cursor-pointer hover:text-accent transition-colors mb-2">
               {name}
             </h3>

@@ -168,7 +168,9 @@ export const Header: React.FC = () => {
             >
               <img
                 src="/logo.png"
-                alt="VIDO Furniture"
+                alt="VIDO Furniture - Vietnam furniture manufacturer logo"
+                width={160}
+                height={80}
                 className="h-20 w-auto object-contain"
               />
             </Link>
@@ -249,7 +251,7 @@ export const Header: React.FC = () => {
                           >
                             {/* Product Image */}
                             <Link
-                              href={`/products/${slug}`}
+                              href={`/products/${slug}/`}
                               onClick={() => setIsWishlistOpen(false)}
                               className="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden"
                             >
@@ -263,7 +265,7 @@ export const Header: React.FC = () => {
                             {/* Product Info */}
                             <div className="flex-1 min-w-0">
                               <Link
-                                href={`/products/${slug}`}
+                                href={`/products/${slug}/`}
                                 onClick={() => setIsWishlistOpen(false)}
                                 className="text-sm font-semibold text-primary hover:text-accent transition-colors line-clamp-1 block"
                               >
@@ -407,7 +409,7 @@ export const Header: React.FC = () => {
                     className="flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-0"
                   >
                     <Link
-                      href={`/products/${slug}`}
+                      href={`/products/${slug}/`}
                       onClick={() => setIsWishlistOpen(false)}
                       className="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden"
                     >
@@ -419,7 +421,7 @@ export const Header: React.FC = () => {
                     </Link>
                     <div className="flex-1 min-w-0">
                       <Link
-                        href={`/products/${slug}`}
+                        href={`/products/${slug}/`}
                         onClick={() => setIsWishlistOpen(false)}
                         className="text-sm font-semibold text-primary hover:text-accent transition-colors line-clamp-1 block"
                       >

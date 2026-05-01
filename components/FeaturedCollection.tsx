@@ -48,7 +48,7 @@ export const FeaturedCollection: React.FC<FeaturedCollectionProps> = ({ products
           return (
             <Link
               key={product.id}
-              href={`/products/${slug}`}
+              href={`/products/${slug}/`}
               className="group cursor-pointer flex flex-col h-full"
             >
               <div className="relative overflow-hidden mb-6 bg-[#F8F8F8] aspect-square border border-gray-100 rounded-sm">

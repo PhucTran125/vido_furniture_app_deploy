@@ -3,6 +3,7 @@ import { Open_Sans, Montserrat } from 'next/font/google';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
 import { ConditionalLayout } from '@/components/ConditionalLayout';
+import { JsonLd } from '@/components/seo/JsonLd';
 import './globals.css';
 
 const openSans = Open_Sans({
@@ -44,6 +45,23 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'VIDO Furniture',
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  description:
+    'Export-quality furniture manufacturer in Vietnam, specializing in compact furniture, creative seating, storage benches, and home decor for European, US, and Japanese markets.',
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'VIDO Furniture',
+  url: SITE_URL,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -54,6 +72,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
       </head>
       <body className="min-h-screen flex flex-col font-sans bg-background text-primary">
         <LanguageProvider>

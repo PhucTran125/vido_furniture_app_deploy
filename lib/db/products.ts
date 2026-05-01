@@ -195,6 +195,28 @@ export async function getAllProductSlugs(): Promise<string[]> {
 }
 
 /**
+ * Get all product slugs paired with their last-modified timestamp.
+ * Used for: sitemap.xml — sitemap lastModified must reflect real updates,
+ * not "today", so Google can prioritize recrawls.
+ */
+export async function getAllProductSlugsWithMeta(): Promise<{ slug: string; updatedAt: string | null }[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('name, item_no, updated_at')
+    .eq('is_active', true);
+
+  if (error) {
+    console.error('Error fetching product slugs with meta:', error);
+    return [];
+  }
+
+  return data.map((p) => ({
+    slug: generateSlugFromName(p.name.en, p.item_no),
+    updatedAt: p.updated_at ?? null,
+  }));
+}
+
+/**
  * Create new product (Admin only)
  * Used for: Admin product creation
  */

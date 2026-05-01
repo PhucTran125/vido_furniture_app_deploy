@@ -1,59 +1,25 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { BlogPost, getLocalizedString, getLocalizedRichContent } from '@/lib/types';
-import { Section } from './ui/Section';
-import { generateHTML } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import DOMPurify from 'isomorphic-dompurify';
+import { BlogPost, getLocalizedString } from '@/lib/types';
 import { ArrowLeft, Calendar, User, Share2, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BlogDetailProps {
   blog: BlogPost;
+  htmlContentEn: string;
+  htmlContentVi: string;
 }
 
-export const BlogDetail: React.FC<BlogDetailProps> = ({ blog }) => {
+export const BlogDetail: React.FC<BlogDetailProps> = ({ blog, htmlContentEn, htmlContentVi }) => {
   const [copied, setCopied] = useState(false);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const title = getLocalizedString(blog.title, language);
   const shortDescription = getLocalizedString(blog.shortDescription, language);
-  const localizedContent = getLocalizedRichContent(blog.content, language);
-
-  // Convert Tiptap JSON content to HTML for display
-  const htmlContent = useMemo(() => {
-    if (!localizedContent) return '';
-
-    try {
-      const rawHtml = generateHTML(localizedContent, [
-        StarterKit.configure({
-          link: {
-            HTMLAttributes: {
-              class: 'text-accent underline hover:text-primary transition-colors cursor-pointer',
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            },
-          },
-        }),
-        Image.configure({
-          HTMLAttributes: { class: 'max-w-full rounded-xl my-8 mx-auto shadow-sm' },
-        }),
-      ]);
-      return DOMPurify.sanitize(rawHtml, {
-        ADD_TAGS: ['img'],
-        ADD_ATTR: ['class', 'src', 'alt', 'href', 'target', 'rel'],
-      });
-    } catch (e) {
-      console.error('Error rendering blog content:', e);
-      return '<p>Error loading content.</p>';
-    }
-  }, [localizedContent]);
-
-  const { t } = useLanguage();
+  const htmlContent = language === 'vi' && htmlContentVi ? htmlContentVi : htmlContentEn;
 
   // Format date
   const publishDate = blog.publishDate 
